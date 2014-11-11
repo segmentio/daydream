@@ -1,4 +1,4 @@
 
 # Daydream
 
-A chrome extension that records your activity and automatically generates a nightmare script.
+A chrome extension that records your activity and generates a nightmare script.
