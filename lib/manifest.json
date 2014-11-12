@@ -4,7 +4,6 @@
   "manifest_version": 2,
   "description": "A chrome extension that records your activity and generates a nightmare script",
   "permissions": [
-    "notifications",
     "tabs",
     "*://*/"
   ],
