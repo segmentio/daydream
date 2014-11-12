@@ -1,7 +1,7 @@
 
 # Daydream
 
-A chrome extension that records your activity and generates a nightmare script.
+A chrome extension that records your activity and generates a [nightmare](https://github.com/segmentio/nightmare) script.
 
 ![Demo](lib/images/demo.gif)
 
