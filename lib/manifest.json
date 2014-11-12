@@ -2,7 +2,7 @@
   "name": "Daydream",
   "version": "1.0.0",
   "manifest_version": 2,
-  "description": "A chrome extension that records your activity and generates a nightmare script",
+  "description": "A chrome extension to record your actions into a nightmare script.",
   "omnibox": { "keyword" : "daydream" },
   "permissions": [
     "tabs",
