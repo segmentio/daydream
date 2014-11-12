@@ -3,10 +3,12 @@
 
 A chrome extension that records your activity and generates a nightmare script.
 
+![Demo](lib/images/demo.gif)
+
 ## Notes
 
-For the extension to work properly, you need to:
+For the extension to work properly:
 
-* Type `daydream`, press `tab`, and then type in the url
+* When you change the URL from the address bar, you need to type `daydream`, press `tab`, and then type in the url
 
-* Press `tab` after typing in input elements
+* When you type input elements, you need to press `tab` afterwards.
