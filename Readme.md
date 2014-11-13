@@ -12,12 +12,13 @@ Install it from the Chrome webstore [here](https://chrome.google.com/webstore/de
 ### Developing
 
 * Clone this repo
+* Run `make`
 * Navigate to `chrome://extensions` in your Chrome browser
 * Click the `Pack extension...` button
-* Browse to the `daydream/lib` directory
+* Browse to the `daydream/build` directory
 * Click the `Pack Extension` button
 * Click the `Load unpacked extension...` button
-* Browse to the `daydream/lib` directory and press the `Select` button
+* Browse to the `daydream/build` directory and press the `Select` button
 
 ## Notes
 
