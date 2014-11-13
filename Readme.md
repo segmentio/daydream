@@ -5,7 +5,11 @@ A chrome extension to record your actions into a [nightmare](https://github.com/
 
 ![Demo](lib/images/demo.gif)
 
-### Getting Started
+### Installing
+
+Install it from the Chrome webstore [here](https://chrome.google.com/webstore/detail/daydream/oajnmbophdhdobfpalhkfgahchpcoali)
+
+### Developing
 
 * Clone this repo
 * Navigate to `chrome://extensions` in your Chrome browser
