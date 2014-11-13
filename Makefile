@@ -52,6 +52,14 @@ clean:
 	@npm cache clean
 
 #
+# Clean-dev.
+#
+
+clean-dev:
+	@rm -rf build
+	@rm -rf components
+
+#
 # Phonies.
 #
 
