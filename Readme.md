@@ -1,15 +1,21 @@
 
 # Daydream
 
-A chrome extension to record your actions into a [nightmare](https://github.com/segmentio/nightmare) script.
+Daydream is a chrome extension to record your actions into a [nightmare](https://github.com/segmentio/nightmare) script.
+
+## Example
 
 ![Demo](lib/images/demo.gif)
 
-### Installing
+## Usage
 
-Install it from the Chrome webstore [here](https://chrome.google.com/webstore/detail/daydream/oajnmbophdhdobfpalhkfgahchpcoali)
+#### Installing
 
-### Developing
+You can download Daydream from the Chrome Web Store [here](https://chrome.google.com/webstore/detail/daydream/oajnmbophdhdobfpalhkfgahchpcoali).
+
+#### Developing
+
+The entry point to the extension is `background.js`, where a recorder is initialized to start listening for icon clicks and messages from the content script `index.js`. `recorder.js` contains the background recorder logic, which includes injecting `index.js` as needed, and transforming the recording array into a nightmare script. `helper.js` contains wrappers for chrome extension API methods.
 
 * Clone this repo
 * Run `make`
@@ -19,8 +25,6 @@ Install it from the Chrome webstore [here](https://chrome.google.com/webstore/de
 * Click the `Pack Extension` button
 * Click the `Load unpacked extension...` button
 * Browse to the `daydream/build` directory and press the `Select` button
-
-## Notes
 
 For the extension to work properly:
 
