@@ -1,11 +1,13 @@
 
 # Daydream
 
-Daydream is a chrome extension to record your actions into a [nightmare](https://github.com/segmentio/nightmare) script.
+> A chrome extension to record your actions into a [nightmare](https://github.com/segmentio/nightmare) script.
 
-## Example
+![Demo](app/background/images/demo.gif)
 
-![Demo](lib/images/demo.gif)
+## Structure
+
+The app is organized into two sections, *background* and *foreground*. Scripts running in the background do not run in the context of the page, but have access to Chrome API methods for various things like injecting scripts and listening for interactions with the extension itself. Scripts running in the foreground run in the context of the page, and therefore can access the DOM, but cannot access certain Chrome API methods that the background script can access. There is also an underlying connection between the background scripts and foreground scripts via messages.
 
 ## Usage
 
@@ -15,19 +17,18 @@ You can download Daydream from the Chrome Web Store [here](https://chrome.google
 
 #### Developing
 
-The entry point to the extension is `background.js`, where a recorder is initialized to start listening for icon clicks and messages from the content script `index.js`. `recorder.js` contains the background recorder logic, which includes injecting `index.js` as needed, and transforming the recording array into a nightmare script. `helper.js` contains wrappers for chrome extension API methods.
+1. Run ```$ git clone https://github.com/segmentio/daydream.git && cd daydream && make```
 
-* Clone this repo
-* Run `make`
-* Navigate to `chrome://extensions` in your Chrome browser
-* Click the `Pack extension...` button
-* Browse to the `daydream/build` directory
-* Click the `Pack Extension` button
-* Click the `Load unpacked extension...` button
-* Browse to the `daydream/build` directory and press the `Select` button
+2. Navigate to `chrome://extensions`
 
-For the extension to work properly:
+3. Click `Pack extension...`
 
-* When you change the URL from the address bar, you need to type `daydream`, press `tab`, and then type in the url
+4. Browse to `daydream/build`
 
-* When you type input elements, you need to press `tab` afterwards.
+5. Click `Load unpacked extension...`
+
+6. Browse to `daydream/build` and press `Select`
+
+#### Notes
+
+If you want daydream to capture url changes in the address bar, type `daydream`, press `tab`, and then type in the url. If you want daydream to capture the values in input elements, press `tab` after you finish typing in each element.

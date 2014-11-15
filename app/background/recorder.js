@@ -3,10 +3,10 @@
  * Module dependencies.
  */
 
-var fmt    = require('yields/fmt');
-var each   = require('component/each');
-var empty  = require('component/empty');
-var helper = require('./helper')();
+var fmt        = require('yields/fmt');
+var each       = require('component/each');
+var empty      = require('component/empty');
+var extension  = require('./utils');
 
 /**
  * Expose `Recorder`.
@@ -33,11 +33,11 @@ function Recorder () {
 Recorder.prototype.startListening = function () {
   var self = this;
 
-  helper.onMessage(function(message) {
+  extension.onMessage(function(message) {
     self.record(message);
   });
 
-  helper.onIconClicked(function () {
+  extension.onIconClicked(function () {
     if (!self.isRunning()) return self.startRecording();
     self.stopRecording();
   });
@@ -72,7 +72,7 @@ Recorder.prototype.record = function (message) {
  */
 
 Recorder.prototype.startRecording = function () {
-  helper.setIcon('images/icon-green.png');
+  extension.setIcon('images/icon-green.png');
   this.recordActions();
   return this;
 };
@@ -83,10 +83,10 @@ Recorder.prototype.startRecording = function () {
 
 Recorder.prototype.recordActions = function () {
   this.recordUrl();
-  helper.inject('index.js');
-  helper.onTabUpdated(function (tabId) {
-    helper.getCurrentTab(function (tab) {
-       if (tabId === tab.id) helper.inject('index.js', tab.id);
+  extension.inject('foreground.js');
+  extension.onTabUpdated(function (tabId) {
+    extension.getCurrentTab(function (tab) {
+       if (tabId === tab.id) extension.inject('foreground.js', tab.id);
     });
   });
 };
@@ -97,10 +97,10 @@ Recorder.prototype.recordActions = function () {
 
 Recorder.prototype.recordUrl = function () {
   var self = this;
-  helper.onAddressBarChanged(function(text) {
+  extension.onAddressBarChanged(function(text) {
     if (text.substr(0, 4) !== "http" || text.substr(0, 5) !== "https") text = "http://" + text;
     self.record(["goto", text]);
-    helper.changeUrl(text);
+    extension.changeUrl(text);
   });
 };
 
@@ -109,7 +109,7 @@ Recorder.prototype.recordUrl = function () {
  */
 
 Recorder.prototype.stopRecording = function () {
-  helper.setIcon('images/icon-black.png');
+  extension.setIcon('images/icon-black.png');
   parse(this.recording);
   empty(this.recording);
 };
@@ -152,5 +152,5 @@ function parse (recording) {
     "  });"
   ].join('\n');
 
-  helper.copyToClipboard(nightmare);
+  extension.copyToClipboard(nightmare);
 }

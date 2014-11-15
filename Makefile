@@ -6,37 +6,25 @@
 BIN := ./node_modules/.bin
 DUO := $(BIN)/_duo
 
+BG := $(shell find app/background/index.js)
+FG := $(shell find app/foreground/index.js)
+
 #
 # Targets.
 #
 
-JS1 := $(shell find lib/index.js)
-JS2 := $(shell find lib/background.js)
-
-#
-# Default.
-#
-
 default: build
 
-#
-# Build.
-#
-
 build: folders
-	@cp lib/manifest.json build/manifest.json
-	@cp lib/images/icon-black.png build/images/icon-black.png
-	@cp lib/images/icon-green.png build/images/icon-green.png
-	@$(DUO) $(JS1) > build/index.js
-	@$(DUO) $(JS2) > build/background.js
+	@cp app/manifest.json build/manifest.json
+	@cp app/background/images/icon-black.png build/images/icon-black.png
+	@cp app/background/images/icon-green.png build/images/icon-green.png
+	@$(DUO) $(BG) > build/background.js
+	@$(DUO) $(FG) > build/foreground.js
 
 folders: node_modules
 	@mkdir -p build
 	@mkdir -p build/images
-
-#
-# Target for `node_modules` folder.
-#
 
 node_modules: package.json
 	@npm install
@@ -50,14 +38,6 @@ clean:
 	@rm -rf components
 	@rm -rf node_modules
 	@npm cache clean
-
-#
-# Clean-dev.
-#
-
-clean-dev:
-	@rm -rf build
-	@rm -rf components
 
 #
 # Phonies.
