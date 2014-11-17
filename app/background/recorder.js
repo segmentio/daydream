@@ -129,7 +129,7 @@ Recorder.prototype.detectScreenshots = function () {
   var self = this;
   chrome.commands.onCommand.addListener(function(command) {
     if (command === "detect-screenshot") {
-      self.record(["screenshot", 'index.js']);
+      self.record(["screenshot", 'index.png']);
     }
   });
 };
