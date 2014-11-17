@@ -5,6 +5,7 @@
   "description": "A chrome extension to record your actions into a nightmare script.",
   "omnibox": { "keyword" : "daydream" },
   "permissions": [
+    "webNavigation",
     "tabs",
     "*://*/"
   ],
@@ -14,5 +15,14 @@
   "background": {
     "scripts": ["background.js"],
     "persistent": false
+  },
+  "commands": {
+    "detect-screenshot": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+3"
+      },
+      "description": "Detect a screenshot",
+      "global": true
+    }
   }
 }

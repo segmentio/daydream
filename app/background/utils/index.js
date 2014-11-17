@@ -1,5 +1,17 @@
 
 /**
+ * When the URL has changed, execute a callback.
+ *
+ * @param {Function} cb
+ */
+
+exports.onUrlChanged = function (cb) {
+  chrome.webNavigation.onCommitted.addListener(function (details) {
+    cb(details);
+  });
+};
+
+/**
  * Change tab url
  *
  * @param {String} url
@@ -22,12 +34,12 @@ exports.copyToClipboard = function (text) {
 /**
  * Get the current tab.
  *
- * @param {Function} fn
+ * @param {Function} cb
  */
 
-exports.getCurrentTab = function (fn) {
+exports.getCurrentTab = function (cb) {
   chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
-    fn(tabs[0]);
+    cb(tabs[0]);
   });
 };
 
@@ -48,37 +60,37 @@ exports.inject = function (name, id) {
 /**
  * On address bar changed, execute a callback
  *
- * @param {Function} fn
+ * @param {Function} cb
  */
 
-exports.onAddressBarChanged = function (fn) {
+exports.onAddressBarChanged = function (cb) {
   chrome.omnibox.onInputEntered.addListener(function (text) {
-    fn(text);
+    cb(text);
   });
 };
 
 /**
  * Execute a callback when the icon is clicked.
  *
- * @param {Function} fn
+ * @param {Function} cb
  */
 
-exports.onIconClicked = function (fn) {
+exports.onIconClicked = function (cb) {
   chrome.browserAction.onClicked.addListener(function () {
-    fn();
+    cb();
   });
 };
 
 /**
  * When a message is received, execute a callback.
  *
- * @param {Function} fn
+ * @param {Function} cb
  */
 
-exports.onMessage = function (fn) {
+exports.onMessage = function (cb) {
   chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     var message = request;
-    fn(message);
+    cb(message);
   });
 };
 
@@ -86,12 +98,12 @@ exports.onMessage = function (fn) {
  * When the tab is updated and the status is complete, execute a callback
  * with the tabId.
  *
- * @param {Function} fn
+ * @param {Function} cb
  */
 
-exports.onTabUpdated = function (fn) {
+exports.onTabUpdated = function (cb) {
   chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-    if (changeInfo.status == 'complete') fn(tabId);
+    if (changeInfo.status == 'complete') cb(tabId);
   });
 };
 

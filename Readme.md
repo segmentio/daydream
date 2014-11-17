@@ -33,4 +33,4 @@ You can download Daydream from the Chrome Web Store [here](https://chrome.google
 
 ### Notes
 
-If you want daydream to capture url changes in the address bar, type `daydream`, press `tab`, and then type in the url. If you want daydream to capture the values in input elements, press `tab` after you finish typing in each element.
+If you want daydream to capture the values in input elements, press `tab` after you finish typing in each element.

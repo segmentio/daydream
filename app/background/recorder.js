@@ -73,6 +73,7 @@ Recorder.prototype.record = function (message) {
 
 Recorder.prototype.startRecording = function () {
   extension.setIcon('images/icon-green.png');
+  this.detectScreenshots();
   this.recordActions();
   return this;
 };
@@ -93,14 +94,43 @@ Recorder.prototype.recordActions = function () {
 
 /**
  * Record the Url.
+ *
+ * TODO: Figure out a way to detect forward/back buttons pressed
+ * and differentiate between them
  */
 
 Recorder.prototype.recordUrl = function () {
   var self = this;
-  extension.onAddressBarChanged(function(text) {
-    if (text.substr(0, 4) !== "http" || text.substr(0, 5) !== "https") text = "http://" + text;
-    self.record(["goto", text]);
-    extension.changeUrl(text);
+  extension.onUrlChanged(function(details) {
+    var type = details.transitionType;
+    var from = details.transitionQualifiers;
+    switch (type) {
+      case 'reload':
+        if (!self.recording.length) return self.record(["goto", details.url]);
+        self.record(['reload']);
+        break;
+      case 'typed':
+        if (!from.length) return self.record(["goto", details.url]);
+        if (from[0] === "from_address_bar") return self.record(["goto", details.url]);
+        if (from[0] === "server_redirect" && from[1] === "from_address_bar") return self.record(["goto", details.url]);
+        break;
+      case 'auto_bookmark':
+        self.record(["goto", details.url]);
+        break;
+    }
+  });
+};
+
+/**
+ * Detect screenshots.
+ */
+
+Recorder.prototype.detectScreenshots = function () {
+  var self = this;
+  chrome.commands.onCommand.addListener(function(command) {
+    if (command === "detect-screenshot") {
+      self.record(["screenshot", 'index.js']);
+    }
   });
 };
 
@@ -139,6 +169,12 @@ function parse (recording) {
       case 'type':
         var val = record[2];
         nightmare += fmt("  .type('input[class=\"%s\"]', '%s')\n", content, val);
+        break;
+      case 'screenshot':
+        nightmare += fmt("  .screenshot('%s')\n", content);
+        break;
+      case 'reload':
+        nightmare += "  .refresh()\n";
         break;
       default:
         console.log("Not a valid nightmare command");
