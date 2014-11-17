@@ -31,7 +31,9 @@ You can download Daydream from the Chrome Web Store [here](https://chrome.google
 
 6. Browse to `daydream/build` and press `Select`
 
-### Note
+### Notes
+
+Daydream currently supports `.goto()`, `.click()`, `.type()`, `.screenshot()`, and `.refresh()`. We're looking to add support for `.forward()` and `.back()` in the near future.
 
 If you want daydream to capture the values in input elements, press `tab` after you finish typing in each element.
 
