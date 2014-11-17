@@ -5,7 +5,7 @@
 
 ## Demo
 
-![Demo](app/background/images/demo.gif)
+[![Demo](app/background/images/Demo.png)](http://cl.ly/0V000I2h1z2b/Demo.mp4)
 
 ## Structure
 
