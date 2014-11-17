@@ -3,7 +3,7 @@
 
 > A chrome extension to record your actions into a [nightmare](https://github.com/segmentio/nightmare) script.
 
-## Demo
+## Video
 
 [![Demo](app/background/images/Demo.png)](http://cl.ly/0V000I2h1z2b/Demo.mp4)
 
