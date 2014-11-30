@@ -92,6 +92,28 @@ function pickAttribute(node, event, val) {
   sendMessage(message);
 }
 
+function getSelectedText() {
+  var text = "";
+  var node;
+  if (typeof window.getSelection != "undefined") {
+    text = window.getSelection().toString();
+    node = window.getSelection().focusNode.parentElement;
+  } else if (typeof document.selection != "undefined" && document.selection.type == "Text") {
+    text = document.selection.createRange().text;
+  }
+  if (text) return [text, node]
+}
+
+function doSomethingWithSelectedText() {
+  var selectedTextArr = getSelectedText();
+  if (selectedTextArr) {
+    pickAttribute(selectedTextArr[1], "highlight");
+  }
+}
+
+document.onmouseup = doSomethingWithSelectedText;
+document.onkeyup = doSomethingWithSelectedText;
+
 /**
 * Get full CSS path of any element
 *

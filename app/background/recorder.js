@@ -175,6 +175,18 @@ function parse(recording) {
       case 'reload':
         result += "    .refresh()\n";
         break;
+      case 'highlight':
+        var textEl =  fmt("      return document.querySelector('%s').innerText;", content);
+
+        result += [
+        '    .evaluate(function () {',
+        textEl,
+        '    }, function (text) {',
+        '      console.log(text);',
+        '    })\n'
+        ].join('\n');
+
+        break;
       default:
         console.log("Not a valid nightmare command");
     }
