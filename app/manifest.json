@@ -1,15 +1,17 @@
 {
   "name": "Daydream",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "manifest_version": 2,
   "description": "A chrome extension to record your actions into a nightmare script.",
   "permissions": [
+    "storage",
     "webNavigation",
     "tabs",
     "*://*/"
   ],
   "browser_action": {
-    "default_icon": "images/icon-black.png"
+    "default_icon": "images/icon-black.png",
+    "default_title": "Daydream"
   },
   "background": {
     "scripts": ["background.js"],
