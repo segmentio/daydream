@@ -1,12 +1,11 @@
-
 /**
  * Module dependencies.
  */
 
-var fmt        = require('yields/fmt');
-var each       = require('component/each');
-var empty      = require('component/empty');
-var extension  = require('./utils');
+var fmt = require('yields/fmt');
+var each = require('component/each');
+var empty = require('component/empty');
+var extension = require('./utils');
 
 /**
  * Expose `Recorder`.
@@ -18,7 +17,7 @@ module.exports = Recorder;
  * Recorder.
  */
 
-function Recorder () {
+function Recorder() {
   if (!(this instanceof Recorder)) return new Recorder();
   this.running = false;
   this.recording = [];
@@ -30,14 +29,14 @@ function Recorder () {
  * Handle incoming messages and icon changes.
  */
 
-Recorder.prototype.startListening = function () {
+Recorder.prototype.startListening = function() {
   var self = this;
 
   extension.onMessage(function(message) {
     self.record(message);
   });
 
-  extension.onIconClicked(function () {
+  extension.onIconClicked(function() {
     if (!self.isRunning()) return self.startRecording();
     self.stopRecording();
   });
@@ -47,7 +46,7 @@ Recorder.prototype.startListening = function () {
  * Check if the recorder is running.
  */
 
-Recorder.prototype.isRunning = function () {
+Recorder.prototype.isRunning = function() {
   var ret = this.running;
   this.running = !this.running;
   if (ret) return true;
@@ -60,7 +59,7 @@ Recorder.prototype.isRunning = function () {
  * @param {String} message
  */
 
-Recorder.prototype.record = function (message) {
+Recorder.prototype.record = function(message) {
   var lastElement = this.recording[this.recording.length - 1];
   if (!lastElement) return this.recording.push(message);
   if (lastElement[1] === message[1]) return;
@@ -71,7 +70,7 @@ Recorder.prototype.record = function (message) {
  * Start recording.
  */
 
-Recorder.prototype.startRecording = function () {
+Recorder.prototype.startRecording = function() {
   extension.setIcon('images/icon-green.png');
   this.detectScreenshots();
   this.recordActions();
@@ -82,12 +81,12 @@ Recorder.prototype.startRecording = function () {
  * Record events on the page.
  */
 
-Recorder.prototype.recordActions = function () {
+Recorder.prototype.recordActions = function() {
   this.recordUrl();
   extension.inject('foreground.js');
-  extension.onTabUpdated(function (tabId) {
-    extension.getCurrentTab(function (tab) {
-       if (tabId === tab.id) extension.inject('foreground.js', tab.id);
+  extension.onTabUpdated(function(tabId) {
+    extension.getCurrentTab(function(tab) {
+      if (tabId === tab.id) extension.inject('foreground.js', tab.id);
     });
   });
 };
@@ -95,11 +94,9 @@ Recorder.prototype.recordActions = function () {
 /**
  * Record the Url.
  *
- * TODO: Figure out a way to detect forward/back buttons pressed
- * and differentiate between them
  */
 
-Recorder.prototype.recordUrl = function () {
+Recorder.prototype.recordUrl = function() {
   var self = this;
   extension.onUrlChanged(function(details) {
     var type = details.transitionType;
@@ -125,7 +122,7 @@ Recorder.prototype.recordUrl = function () {
  * Detect screenshots.
  */
 
-Recorder.prototype.detectScreenshots = function () {
+Recorder.prototype.detectScreenshots = function() {
   var self = this;
   chrome.commands.onCommand.addListener(function(command) {
     if (command === "detect-screenshot") {
@@ -138,10 +135,13 @@ Recorder.prototype.detectScreenshots = function () {
  * Stop recording.
  */
 
-Recorder.prototype.stopRecording = function () {
+Recorder.prototype.stopRecording = function() {
   extension.setIcon('images/icon-black.png');
-  parse(this.recording);
-  empty(this.recording);
+  var result = parse(this.recording);
+  chrome.storage.sync.set({'nightmareStr': result});
+  chrome.storage.sync.set({'nightmareArr': this.recording});
+  chrome.browserAction.setPopup({popup: 'index.html'});
+  chrome.browserAction.setBadgeText({text: '1'});
 };
 
 /**
@@ -150,8 +150,8 @@ Recorder.prototype.stopRecording = function () {
  * @param {Array} recording
  */
 
-function parse (recording) {
-  var nightmare = [
+function parse(recording) {
+  var result = [
     "var Nightmare = require('nightmare');",
     "  new Nightmare()\n"
   ].join('\n');
@@ -161,32 +161,27 @@ function parse (recording) {
     var content = record[1];
     switch (type) {
       case 'goto':
-        nightmare += fmt("  .goto('%s')\n", content);
+        result += fmt("    .goto('%s')\n", content);
         break;
       case 'click':
-        nightmare += fmt("  .click('.%s')\n", content);
+        result += fmt("    .click('%s')\n", content);
         break;
       case 'type':
         var val = record[2];
-        nightmare += fmt("  .type('input[class=\"%s\"]', '%s')\n", content, val);
+        result += fmt("    .type('%s', '%s')\n", content, val);
         break;
       case 'screenshot':
-        nightmare += fmt("  .screenshot('%s')\n", content);
+        result += fmt("    .screenshot('%s')\n", content);
         break;
       case 'reload':
-        nightmare += "  .refresh()\n";
+        result += "    .refresh()\n";
         break;
       default:
         console.log("Not a valid nightmare command");
     }
   });
 
-  nightmare += [
-    "  .run(function (err, nightmare) {",
-    "     if (err) return console.log(err);",
-    "     console.log('Done!');",
-    "  });"
-  ].join('\n');
+  result += "    .run();"
 
-  extension.copyToClipboard(nightmare);
+  return result;
 }
