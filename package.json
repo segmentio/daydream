@@ -1,6 +1,6 @@
 {
   "name": "daydream",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A chrome extension to record your actions into a nightmare script.",
   "devDependencies": {
     "duo": "*"
