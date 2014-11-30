@@ -139,7 +139,6 @@ Recorder.prototype.stopRecording = function() {
   extension.setIcon('images/icon-black.png');
   var result = parse(this.recording);
   chrome.storage.sync.set({'nightmareStr': result});
-  chrome.storage.sync.set({'nightmareArr': this.recording});
   chrome.browserAction.setPopup({popup: 'index.html'});
   chrome.browserAction.setBadgeText({text: '1'});
 };
