@@ -19,6 +19,10 @@ build: folders
 	@cp app/manifest.json build/manifest.json
 	@cp app/background/images/icon-black.png build/images/icon-black.png
 	@cp app/background/images/icon-green.png build/images/icon-green.png
+	@cp app/background/images/screenshot.png build/images/screenshot.png
+	@cp app/foreground/popup/index.html build/index.html
+	@cp app/foreground/popup/index.css build/index.css
+	@$(DUO) app/foreground/popup/index.js > build/index.js
 	@$(DUO) $(BG) > build/background.js
 	@$(DUO) $(FG) > build/foreground.js
 
