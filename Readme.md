@@ -3,9 +3,9 @@
 
 > A chrome extension to record your actions into a [nightmare](https://github.com/segmentio/nightmare) script.
 
-## Video
+## Example
 
-[![Demo](app/background/images/Demo.png)](http://cl.ly/0V000I2h1z2b/Demo.mp4)
+[![Demo](app/background/images/screenshot.png)](http://cl.ly/0V000I2h1z2b/screenshot.png)
 
 ## Structure
 
@@ -33,7 +33,7 @@ You can download Daydream from the Chrome Web Store [here](https://chrome.google
 
 ### Notes
 
-Daydream currently supports `.goto()`, `.click()`, `.type()`, `.screenshot()`, and `.refresh()`. We're looking to add support for `.forward()` and `.back()` in the near future.
+Daydream currently supports `.goto()`, `.click()`, `.type()`, `.screenshot()`, and `.refresh()`.
 
 If you want daydream to capture the values in input elements, press `tab` after you finish typing in each element.
 
