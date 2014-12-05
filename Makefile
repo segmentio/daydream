@@ -3,8 +3,8 @@
 # Binaries.
 #
 
-BIN := ./node_modules/.bin
-DUO := $(BIN)/_duo
+BINS = node_modules/.bin
+DUO = $(BINS)/duo
 
 BG := $(shell find app/background/index.js)
 FG := $(shell find app/foreground/index.js)
@@ -19,7 +19,6 @@ build: folders
 	@cp app/manifest.json build/manifest.json
 	@cp app/background/images/icon-black.png build/images/icon-black.png
 	@cp app/background/images/icon-green.png build/images/icon-green.png
-	@cp app/background/images/screenshot.png build/images/screenshot.png
 	@cp app/foreground/popup/index.html build/index.html
 	@cp app/foreground/popup/index.css build/index.css
 	@$(DUO) app/foreground/popup/index.js > build/index.js
