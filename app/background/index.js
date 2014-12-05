@@ -3,10 +3,32 @@
  * Module dependencies.
  */
 
-var Recorder = require('./recorder');
+var daydream = require('./daydream')();
+var recorder = require('./recorder')();
 
 /**
- * Initialize a new Recorder.
+ * Boot.
  */
 
-var recorder = Recorder();
+daydream.boot();
+
+/**
+ * Start.
+ */
+
+daydream.on('start', function () {
+  recorder.startRecording();
+  this.setIcon("green");
+});
+
+/**
+ * Stop.
+ */
+
+daydream.on('stop', function () {
+  recorder.stopRecording();
+  this.setIcon("black");
+  var res = this.parse(recorder.recording);
+  this.store(res);
+  this.showPopup();
+});
