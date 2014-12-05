@@ -1,11 +1,10 @@
+
 /**
  * Module dependencies.
  */
 
-var fmt = require('yields/fmt');
-var each = require('component/each');
+var each  = require('component/each');
 var empty = require('component/empty');
-var extension = require('./utils');
 
 /**
  * Expose `Recorder`.
@@ -17,41 +16,11 @@ module.exports = Recorder;
  * Recorder.
  */
 
-function Recorder() {
+function Recorder () {
   if (!(this instanceof Recorder)) return new Recorder();
-  this.running = false;
   this.recording = [];
-  this.startListening();
   return this;
 }
-
-/**
- * Handle incoming messages and icon changes.
- */
-
-Recorder.prototype.startListening = function() {
-  var self = this;
-
-  extension.onMessage(function(message) {
-    self.record(message);
-  });
-
-  extension.onIconClicked(function() {
-    if (!self.isRunning()) return self.startRecording();
-    self.stopRecording();
-  });
-};
-
-/**
- * Check if the recorder is running.
- */
-
-Recorder.prototype.isRunning = function() {
-  var ret = this.running;
-  this.running = !this.running;
-  if (ret) return true;
-  return false;
-};
 
 /**
  * Record a message.
@@ -59,7 +28,7 @@ Recorder.prototype.isRunning = function() {
  * @param {String} message
  */
 
-Recorder.prototype.record = function(message) {
+Recorder.prototype.record = function (message) {
   var lastElement = this.recording[this.recording.length - 1];
   if (!lastElement) return this.recording.push(message);
   if (lastElement[1] === message[1]) return;
@@ -70,35 +39,50 @@ Recorder.prototype.record = function(message) {
  * Start recording.
  */
 
-Recorder.prototype.startRecording = function() {
-  extension.setIcon('images/icon-green.png');
+Recorder.prototype.startRecording = function () {
+  var self = this;
+  self.detect();
+  chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    var message = request;
+    self.record(message);
+  });
+};
+
+/**
+ * Detect.
+ */
+
+Recorder.prototype.detect = function () {
   this.detectScreenshots();
-  this.recordActions();
-  return this;
+  this.detectUrl();
+  this.detectEvents();
 };
 
 /**
  * Record events on the page.
  */
 
-Recorder.prototype.recordActions = function() {
-  this.recordUrl();
-  extension.inject('foreground.js');
-  extension.onTabUpdated(function(tabId) {
-    extension.getCurrentTab(function(tab) {
-      if (tabId === tab.id) extension.inject('foreground.js', tab.id);
-    });
+Recorder.prototype.detectEvents = function () {
+  chrome.tabs.query({currentWindow: true, active: true}, function (tabs){
+    inject('foreground.js', tabs[0].id);
+  });
+  chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+    if (changeInfo.status == 'complete') {
+      chrome.tabs.query({currentWindow: true, active: true}, function (tabs){
+        if (tabId === tabs[0].id) inject('foreground.js', tabs[0].id);
+      });
+    }
   });
 };
 
 /**
- * Record the Url.
+ * Detect the Url.
  *
  */
 
-Recorder.prototype.recordUrl = function() {
+Recorder.prototype.detectUrl = function () {
   var self = this;
-  extension.onUrlChanged(function(details) {
+  chrome.webNavigation.onCommitted.addListener(function (details) {
     var type = details.transitionType;
     var from = details.transitionQualifiers;
     switch (type) {
@@ -122,11 +106,11 @@ Recorder.prototype.recordUrl = function() {
  * Detect screenshots.
  */
 
-Recorder.prototype.detectScreenshots = function() {
+Recorder.prototype.detectScreenshots = function () {
   var self = this;
-  chrome.commands.onCommand.addListener(function(command) {
+  chrome.commands.onCommand.addListener(function (command) {
     if (command === "detect-screenshot") {
-      self.record(["screenshot", 'index.png']);
+      self.record(['screenshot', 'index.png']);
     }
   });
 };
@@ -135,64 +119,20 @@ Recorder.prototype.detectScreenshots = function() {
  * Stop recording.
  */
 
-Recorder.prototype.stopRecording = function() {
-  extension.setIcon('images/icon-black.png');
-  var result = parse(this.recording);
-  chrome.storage.sync.set({'nightmareStr': result});
-  chrome.browserAction.setPopup({popup: 'index.html'});
-  chrome.browserAction.setBadgeText({text: '1'});
+Recorder.prototype.stopRecording = function () {
+  chrome.commands.onCommand.removeListener();
+  chrome.webNavigation.onCommitted.removeListener();
+  chrome.runtime.onMessage.removeListener();
+  chrome.tabs.onUpdated.removeListener();
 };
 
 /**
- * Parse the recording.
+ * Helper function to inject a content script.
  *
- * @param {Array} recording
+ * @param {String} name
+ * @param {Number} id
  */
 
-function parse(recording) {
-  var result = [
-    "var Nightmare = require('nightmare');",
-    "  new Nightmare()\n"
-  ].join('\n');
-
-  each(recording, function(record, i) {
-    var type = record[0];
-    var content = record[1];
-    switch (type) {
-      case 'goto':
-        result += fmt("    .goto('%s')\n", content);
-        break;
-      case 'click':
-        result += fmt("    .click('%s')\n", content);
-        break;
-      case 'type':
-        var val = record[2];
-        result += fmt("    .type('%s', '%s')\n", content, val);
-        break;
-      case 'screenshot':
-        result += fmt("    .screenshot('%s')\n", content);
-        break;
-      case 'reload':
-        result += "    .refresh()\n";
-        break;
-      case 'highlight':
-        var textEl =  fmt("      return document.querySelector('%s').innerText;", content);
-
-        result += [
-        '    .evaluate(function () {',
-        textEl,
-        '    }, function (text) {',
-        '      console.log(text);',
-        '    })\n'
-        ].join('\n');
-
-        break;
-      default:
-        console.log("Not a valid nightmare command");
-    }
-  });
-
-  result += "    .run();"
-
-  return result;
-}
+function inject (name, id) {
+  chrome.tabs.executeScript(id, {file: name});
+};
