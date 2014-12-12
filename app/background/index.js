@@ -6,6 +6,8 @@
 var daydream = require('./daydream')();
 var recorder = require('./recorder')();
 
+require('stevenmiller888/analytics')('J0KCCfAPH6oXQJ8Np1IwI0HgAGW5oFOX');
+
 /**
  * Boot.
  */
