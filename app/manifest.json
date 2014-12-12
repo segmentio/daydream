@@ -9,6 +9,7 @@
     "tabs",
     "*://*/"
   ],
+  "content_security_policy": "script-src 'self' https://cdn.segment.com; object-src 'self'",
   "browser_action": {
     "default_icon": "images/icon-black.png",
     "default_title": "Daydream"
