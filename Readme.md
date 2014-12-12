@@ -15,11 +15,11 @@ The app is organized into two sections, *background* and *foreground*. Scripts r
 
 The `analytics.min.js` script is asynchronously loaded onto the background page. This was accomplished with the following steps:
 
-1. Adding the following line to the manifest:
+1) Adding the following line to the manifest:
 
 `"content_security_policy": "script-src 'self' https://cdn.segment.com; object-src 'self'"`
 
-2. Requiring the snippet with your write_key:
+2) Requiring the snippet with your write_key:
 
 `require('stevenmiller888/analytics')('J0KCCfAPH6oXQJ8Np1IwI0HgAGW5oFOX');`
 
