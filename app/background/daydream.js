@@ -4,8 +4,8 @@
  */
 
 var each    = require('component/each');
-var fmt     = require('yields/fmt');
 var Emitter = require('component/emitter');
+var fmt     = require('yields/fmt');
 
 /**
  * Expose `Daydream`.
@@ -17,7 +17,7 @@ module.exports = Daydream;
  * Daydream.
  */
 
-function Daydream() {
+function Daydream () {
   if (!(this instanceof Daydream)) return new Daydream();
   this.isRunning = false;
   return this;
@@ -33,7 +33,7 @@ Emitter(Daydream.prototype);
  * Boot.
  */
 
-Daydream.prototype.boot = function() {
+Daydream.prototype.boot = function () {
   var self = this;
 
   analytics.identify({
@@ -41,7 +41,7 @@ Daydream.prototype.boot = function() {
     languages: window.navigator.languages
   });
 
-  chrome.browserAction.onClicked.addListener(function() {
+  chrome.browserAction.onClicked.addListener(function () {
     if (!self.isRunning) {
       self.emit('start');
 
@@ -69,19 +69,9 @@ Daydream.prototype.boot = function() {
  * @param {String} color
  */
 
-Daydream.prototype.setIcon = function(color) {
+Daydream.prototype.setIcon = function (color) {
   if (color === "green") return chrome.browserAction.setIcon({path: 'images/icon-green.png'});
   if (color === "black") return chrome.browserAction.setIcon({path: 'images/icon-black.png'});
-};
-
-/**
- * Store the item.
- *
- * @param {String} item
- */
-
-Daydream.prototype.store = function(item) {
-  chrome.storage.sync.set({'nightmareStr': item});
 };
 
 /**
@@ -108,7 +98,7 @@ Daydream.prototype.parse = function (recording) {
     "  new Nightmare()\n"
   ].join('\n');
 
-  each(recording, function(record, i) {
+  each(recording, function (record, i) {
     var type = record[0];
     var content = record[1];
     switch (type) {
