@@ -1,30 +1,21 @@
+
 /**
  * Module dependencies.
  */
 
-var each = require('component/each');
-var Highlight = require('segmentio/highlight');
-var js = require('segmentio/highlight-javascript');
+var popup = require('./popup')();
 
 /**
- * Get the Nightmare script from localStorage and
- * add it to the popup.
+ * Boot.
  */
 
-chrome.storage.sync.get('nightmareStr', function(data) {
-  var highlight = Highlight().use(js);
-  var nightmare = data.nightmareStr;
-  var el = document.getElementsByTagName('pre')[0];
-  el.innerText = nightmare;
-  highlight.element(el);
-});
+popup.boot();
 
 /**
- * Restart the extension.
+ * Restart.
  */
 
-var restart = document.getElementById('Restart');
-restart.addEventListener('click', function(event) {
+popup.on('restart', function () {
   chrome.runtime.reload();
   window.close();
 });
