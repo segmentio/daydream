@@ -35,11 +35,29 @@ Emitter(Daydream.prototype);
 
 Daydream.prototype.boot = function() {
   var self = this;
+
+  analytics.identify({
+    version: chrome.app.getDetails().version,
+    languages: window.navigator.languages
+  });
+
   chrome.browserAction.onClicked.addListener(function() {
     if (!self.isRunning) {
       self.emit('start');
+
+      analytics.track('Clicked icon', {
+        start: true,
+        stop: false,
+        background: true
+      });
     } else {
       self.emit('stop');
+
+      analytics.track('Clicked icon', {
+        start: false,
+        stop: true,
+        background: true
+      });
     }
     self.isRunning = !self.isRunning;
   });
@@ -71,6 +89,9 @@ Daydream.prototype.store = function(item) {
  */
 
 Daydream.prototype.showPopup = function () {
+  analytics.track('Displayed Popup', {
+    background: true
+  });
   chrome.browserAction.setPopup({popup: 'index.html'});
   chrome.browserAction.setBadgeText({text: '1'});
 };
