@@ -11,6 +11,18 @@
 
 The app is organized into two sections, *background* and *foreground*. Scripts running in the background do **not** run in the context of the page, but have access to Chrome Extension API methods for various things like injecting scripts and listening for interactions with the extension itself. Scripts running in the foreground run in the context of the page, and therefore can access the DOM, but **cannot** access certain Chrome Extension API methods that the background script can access. There is also an underlying connection between the background scripts and foreground scripts via messages.
 
+## Analytics
+
+The `analytics.min.js` script is asynchronously loaded onto the background page. This was accomplished with the following steps:
+
+1. Adding the following line to the manifest:
+
+`"content_security_policy": "script-src 'self' https://cdn.segment.com; object-src 'self'"`
+
+2. Requiring the snippet with your write_key:
+
+`require('stevenmiller888/analytics')('J0KCCfAPH6oXQJ8Np1IwI0HgAGW5oFOX');`
+
 ## Usage
 
 ### Installing
