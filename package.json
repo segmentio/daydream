@@ -1,7 +1,7 @@
 {
   "name": "daydream",
   "repository": "git://github.com/segmentio/daydream",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A chrome extension to record your actions into a nightmare script.",
   "devDependencies": {
     "duo": "0.8.10"
