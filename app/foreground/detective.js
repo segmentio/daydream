@@ -30,7 +30,7 @@ Detective.prototype.boot = function () {
   this.detect(['a', 'button'], 'click');
   this.detect(['input'], 'keydown');
   this.detect([], 'copy');
-}
+};
 
 /**
  * Detect.
@@ -66,7 +66,7 @@ Detective.prototype.copyText = function () {
       self.handle('evaluate', selObj.focusNode);
     }
   };
-}
+};
 
 /**
  * Handle.
@@ -80,4 +80,4 @@ Detective.prototype.handle = function (event, node) {
   var message = [event, path];
   if (node.value) message.push(node.value);
   chrome.runtime.sendMessage(message);
-}
+};
