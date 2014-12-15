@@ -3,8 +3,8 @@
 # Binaries.
 #
 
-BINS = node_modules/.bin
-DUO = $(BINS)/duo
+BIN = node_modules/.bin
+DUO = $(BIN)/duo
 
 BG := $(shell find app/background/index.js)
 FG := $(shell find app/foreground/index.js)
