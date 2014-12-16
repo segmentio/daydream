@@ -16,6 +16,7 @@ popup.boot();
  */
 
 popup.on('restart', function () {
+  chrome.browserAction.setBadgeText({text: ''});
   chrome.runtime.reload();
   window.close();
 });
