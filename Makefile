@@ -6,6 +6,10 @@
 BIN = node_modules/.bin
 DUO = $(BIN)/duo
 
+#
+# Wildcards.
+#
+
 BG := $(shell find app/background/index.js)
 FG := $(shell find app/foreground/index.js)
 
@@ -37,14 +41,11 @@ node_modules: package.json
 #
 
 clean:
-	@rm -rf build
-	@rm -rf components
-	@rm -rf node_modules
+	@rm -rf build components node_modules
 	@npm cache clean
 
 #
 # Phonies.
 #
 
-.PHONY: build
 .PHONY: clean
