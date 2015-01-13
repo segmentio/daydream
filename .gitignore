@@ -1,6 +1,5 @@
 node_modules
 components
 .DS_Store
-build
 *.pem
 *.crx
