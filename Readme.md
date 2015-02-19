@@ -13,15 +13,31 @@ The app is organized into two sections, *background* and *foreground*. Scripts r
 
 ## Analytics
 
-The `analytics.min.js` script is asynchronously loaded onto the background page. This was accomplished with the following steps:
+You can easily add analytics-node to your own chrome extension. Here are the steps to do that:
 
-1) Adding the following line to the manifest:
+1) Add the following two lines to any file you want to use analytics in:
 
-`"content_security_policy": "script-src 'self' https://cdn.segment.com; object-src 'self'"`
+```js
+var Analytics = require('analytics-node');
+var analytics = new Analytics('YOUR_WRITE_KEY');
+```
 
-2) Requiring the snippet with your write_key:
+2) Send any Segment API calls you want, for example:
 
-`require('stevenmiller888/analytics')('J0KCCfAPH6oXQJ8Np1IwI0HgAGW5oFOX');`
+```js
+analytics.identify({
+  userId: '12345',
+  version: chrome.app.getDetails().version,
+  languages: window.navigator.languages
+});
+
+analytics.track({
+  userId: '12345',
+  event: 'Clicked icon'
+});
+```
+
+3) [Duo](https://github.com/duojs/duo)-ify or [Browser](https://github.com/substack/node-browserify/)-ify those files.
 
 ## Usage
 
