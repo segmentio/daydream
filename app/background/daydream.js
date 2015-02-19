@@ -3,9 +3,19 @@
  * Module dependencies.
  */
 
-var each    = require('component/each');
-var Emitter = require('component/emitter');
-var fmt     = require('yields/fmt');
+var each      = require('component/each');
+var Emitter   = require('component/emitter');
+var fmt       = require('yields/fmt');
+var uid       = require('matthewmueller/uid');
+var Analytics = require('./analytics-node');
+var analytics = new Analytics('J0KCCfAPH6oXQJ8Np1IwI0HgAGW5oFOX');
+
+var userId = localStorage['userId'];
+
+if (!userId) {
+  userId = uid();
+  localStorage['userId'] = userId;
+}
 
 /**
  * Expose `Daydream`.
@@ -37,6 +47,7 @@ Daydream.prototype.boot = function () {
   var self = this;
 
   analytics.identify({
+    userId: userId,
     version: chrome.app.getDetails().version,
     languages: window.navigator.languages
   });
@@ -45,15 +56,19 @@ Daydream.prototype.boot = function () {
     if (!self.isRunning) {
       self.emit('start');
 
-      analytics.track('Clicked icon', {
+      analytics.track({
+        userId: userId,
+        event: 'Clicked icon',
         start: true,
         stop: false,
         background: true
       });
     } else {
       self.emit('stop');
-
-      analytics.track('Clicked icon', {
+      
+      analytics.track({
+        userId: userId,
+        event: 'Clicked icon',
         start: false,
         stop: true,
         background: true
@@ -79,7 +94,9 @@ Daydream.prototype.setIcon = function (color) {
  */
 
 Daydream.prototype.showPopup = function () {
-  analytics.track('Displayed Popup', {
+  analytics.track({
+    userId: userId,
+    event: 'Displayed Popup',
     background: true
   });
   chrome.browserAction.setPopup({popup: 'index.html'});

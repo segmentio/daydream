@@ -3,8 +3,18 @@
  * Module dependencies.
  */
 
-var each  = require('component/each');
-var empty = require('component/empty');
+var each      = require('component/each');
+var empty     = require('component/empty');
+var uid       = require('matthewmueller/uid');
+var Analytics = require('./analytics-node');
+var analytics = new Analytics('J0KCCfAPH6oXQJ8Np1IwI0HgAGW5oFOX');
+
+var userId = localStorage['userId'];
+
+if (!userId) {
+  userId = uid();
+  localStorage['userId'] = userId;
+}
 
 /**
  * Expose `Recorder`.
@@ -40,7 +50,9 @@ Recorder.prototype.record = function (message) {
  */
 
 Recorder.prototype.startRecording = function () {
-  analytics.track('Started recording', {
+  analytics.track({
+    userId: userId,
+    event: 'Started recording',
     background: true
   });
   var self = this;
@@ -90,7 +102,9 @@ Recorder.prototype.detectUrl = function () {
     var from = details.transitionQualifiers;
     switch (type) {
       case 'reload':
-        analytics.track('Changed Url', {
+        analytics.track({
+          userId: userId,
+          event: 'Changed Url',
           type: 'reload',
           background: true
         });
@@ -98,7 +112,9 @@ Recorder.prototype.detectUrl = function () {
         self.record(['reload']);
         break;
       case 'typed':
-        analytics.track('Changed Url', {
+        analytics.track({
+          userId: userId,
+          event: 'Changed Url',
           type: 'type',
           background: true
         });
@@ -107,7 +123,9 @@ Recorder.prototype.detectUrl = function () {
         if (from[0] === "server_redirect" && from[1] === "from_address_bar") return self.record(["goto", details.url]);
         break;
       case 'auto_bookmark':
-        analytics.track('Changed Url', {
+        analytics.track({
+          userId: userId,
+          event: 'Changed Url',
           type: 'bookmark',
           background: true
         });
@@ -125,7 +143,9 @@ Recorder.prototype.detectScreenshots = function () {
   var self = this;
   chrome.commands.onCommand.addListener(function (command) {
     if (command === "detect-screenshot") {
-      analytics.track('Took Screenshot', {
+      analytics.track({
+        userId: userId,
+        event: 'Took Screenshot',
         background: true
       });
       self.record(['screenshot', 'index.png']);

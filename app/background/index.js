@@ -5,7 +5,6 @@
 
 var daydream  = require('./daydream')();
 var recorder  = require('./recorder')();
-var analytics = require('stevenmiller888/analytics')('J0KCCfAPH6oXQJ8Np1IwI0HgAGW5oFOX');
 var store     = require('yields/store');
 
 /**
