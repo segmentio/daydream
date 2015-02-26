@@ -6,6 +6,7 @@
 var each      = require('component/each');
 var Emitter   = require('component/emitter');
 var fmt       = require('yields/fmt');
+var os        = require('component/os');
 var uid       = require('matthewmueller/uid');
 var Analytics = require('./analytics-node');
 var analytics = new Analytics('J0KCCfAPH6oXQJ8Np1IwI0HgAGW5oFOX');
@@ -110,30 +111,33 @@ Daydream.prototype.showPopup = function () {
  */
 
 Daydream.prototype.parse = function (recording) {
+  var newLine = '\n';
+  if (os == 'windows') newLine = '\r\n';
+
   var result = [
     "var Nightmare = require('nightmare');",
-    "  new Nightmare()\n"
-  ].join('\n');
+    fmt("  new Nightmare()%s", newLine)
+  ].join(newLine);
 
   each(recording, function (record, i) {
     var type = record[0];
     var content = record[1];
     switch (type) {
       case 'goto':
-        result += fmt("    .goto('%s')\n", content);
+        result += fmt("    .goto('%s')%s", content, newLine);
         break;
       case 'click':
-        result += fmt("    .click('%s')\n", content);
+        result += fmt("    .click('%s')%s", content, newLine);
         break;
       case 'type':
         var val = record[2];
-        result += fmt("    .type('%s', '%s')\n", content, val);
+        result += fmt("    .type('%s', '%s')%s", content, val, newLine);
         break;
       case 'screenshot':
-        result += fmt("    .screenshot('%s')\n", content);
+        result += fmt("    .screenshot('%s')%s", content, newLine);
         break;
       case 'reload':
-        result += "    .refresh()\n";
+        result += fmt("    .refresh()%s", newLine);
         break;
       case 'evaluate':
         var textEl = fmt("      return document.querySelector('%s').innerText;", content);
@@ -143,8 +147,8 @@ Daydream.prototype.parse = function (recording) {
           textEl,
           '    }, function (text) {',
           '      console.log(text);',
-          '    })\n'
-        ].join('\n');
+          fmt('    })%s', newLine)
+        ].join(newLine);
 
         break;
       default:

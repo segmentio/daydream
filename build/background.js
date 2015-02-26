@@ -129,6 +129,7 @@ daydream.on('stop', function () {
 var each      = require('component/each');
 var Emitter   = require('component/emitter');
 var fmt       = require('yields/fmt');
+var os        = require('component/os');
 var uid       = require('matthewmueller/uid');
 var Analytics = require('./analytics-node');
 var analytics = new Analytics('J0KCCfAPH6oXQJ8Np1IwI0HgAGW5oFOX');
@@ -233,30 +234,35 @@ Daydream.prototype.showPopup = function () {
  */
 
 Daydream.prototype.parse = function (recording) {
+  var newLine = '\n';
+  if (os == 'windows') newLine = '\r\n';
+  
+  console.log(newLine);
+  
   var result = [
     "var Nightmare = require('nightmare');",
-    "  new Nightmare()\n"
-  ].join('\n');
+    fmt("  new Nightmare()%s", newLine)
+  ].join(newLine);
 
   each(recording, function (record, i) {
     var type = record[0];
     var content = record[1];
     switch (type) {
       case 'goto':
-        result += fmt("    .goto('%s')\n", content);
+        result += fmt("    .goto('%s')%s", content, newLine);
         break;
       case 'click':
-        result += fmt("    .click('%s')\n", content);
+        result += fmt("    .click('%s')%s", content, newLine);
         break;
       case 'type':
         var val = record[2];
-        result += fmt("    .type('%s', '%s')\n", content, val);
+        result += fmt("    .type('%s', '%s')%s", content, val, newLine);
         break;
       case 'screenshot':
-        result += fmt("    .screenshot('%s')\n", content);
+        result += fmt("    .screenshot('%s')%s", content, newLine);
         break;
       case 'reload':
-        result += "    .refresh()\n";
+        result += fmt("    .refresh()%s", newLine);
         break;
       case 'evaluate':
         var textEl = fmt("      return document.querySelector('%s').innerText;", content);
@@ -266,8 +272,8 @@ Daydream.prototype.parse = function (recording) {
           textEl,
           '    }, function (text) {',
           '      console.log(text);',
-          '    })\n'
-        ].join('\n');
+          fmt('    })%s', newLine)
+        ].join(newLine);
 
         break;
       default:
@@ -280,7 +286,7 @@ Daydream.prototype.parse = function (recording) {
   return result;
 };
 
-}, {"component/each":5,"component/emitter":6,"yields/fmt":7,"matthewmueller/uid":8,"./analytics-node":9}],
+}, {"component/each":5,"component/emitter":6,"yields/fmt":7,"component/os":8,"matthewmueller/uid":9,"./analytics-node":10}],
 5: [function(require, module, exports) {
 
 /**
@@ -372,8 +378,8 @@ function array(obj, fn, ctx) {
   }
 }
 
-}, {"type":10,"component-type":10,"to-function":11}],
-10: [function(require, module, exports) {
+}, {"type":11,"component-type":11,"to-function":12}],
+11: [function(require, module, exports) {
 
 /**
  * toString ref.
@@ -408,7 +414,7 @@ module.exports = function(val){
 };
 
 }, {}],
-11: [function(require, module, exports) {
+12: [function(require, module, exports) {
 
 /**
  * Module Dependencies
@@ -562,8 +568,8 @@ function stripNested (prop, str, val) {
   });
 }
 
-}, {"props":12,"component-props":12}],
-12: [function(require, module, exports) {
+}, {"props":13,"component-props":13}],
+13: [function(require, module, exports) {
 /**
  * Global Names
  */
@@ -861,6 +867,19 @@ function fmt(str){
 
 }, {}],
 8: [function(require, module, exports) {
+
+
+module.exports = os();
+
+function os() {
+  var ua = navigator.userAgent;
+  if (/mac/i.test(ua)) return 'mac';
+  if (/win/i.test(ua)) return 'windows';
+  if (/linux/i.test(ua)) return 'linux';
+}
+
+}, {}],
+9: [function(require, module, exports) {
 /**
  * Export `uid`
  */
@@ -880,7 +899,7 @@ function uid(len) {
 }
 
 }, {}],
-9: [function(require, module, exports) {
+10: [function(require, module, exports) {
 ! function(e) {
     if ("object" == typeof exports && "undefined" != typeof module) module.exports = e();
     else if ("function" == typeof define && define.amd) define([], e);
@@ -13094,8 +13113,8 @@ function inject (name, id) {
   chrome.tabs.executeScript(id, {file: name});
 };
 
-}, {"component/each":5,"component/empty":13,"matthewmueller/uid":8,"./analytics-node":9}],
-13: [function(require, module, exports) {
+}, {"component/each":5,"component/empty":14,"matthewmueller/uid":9,"./analytics-node":10}],
+14: [function(require, module, exports) {
 
 var isArray = require('isarray');
 
@@ -13120,8 +13139,8 @@ function empty(x) {
 
 module.exports = empty;
 
-}, {"isarray":14}],
-14: [function(require, module, exports) {
+}, {"isarray":15}],
+15: [function(require, module, exports) {
 module.exports = Array.isArray || function (arr) {
   return Object.prototype.toString.call(arr) == '[object Array]';
 };
@@ -13222,8 +13241,8 @@ function all(){
   return ret;
 }
 
-}, {"unserialize":15,"each":5}],
-15: [function(require, module, exports) {
+}, {"unserialize":16,"each":5}],
+16: [function(require, module, exports) {
 
 /**
  * Unserialize the given "stringified" javascript.
