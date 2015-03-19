@@ -3,12 +3,17 @@
  * Module dependencies.
  */
 
-var each      = require('component/each');
-var Emitter   = require('component/emitter');
-var fmt       = require('yields/fmt');
-var os        = require('component/os');
-var uid       = require('matthewmueller/uid');
 var Analytics = require('./analytics-node');
+var Emitter = require('component/emitter');
+var uid  = require('matthewmueller/uid');
+var each = require('component/each');
+var os = require('component/os');
+var fmt = require('yields/fmt');
+
+/**
+ * Analytics.
+ */
+
 var analytics = new Analytics('J0KCCfAPH6oXQJ8Np1IwI0HgAGW5oFOX');
 
 var userId = localStorage['userId'];
