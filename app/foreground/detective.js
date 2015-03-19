@@ -3,9 +3,9 @@
 * Module dependencies.
 */
 
-var fmt     = require('yields/fmt');
-var each    = require('component/each');
 var cssPath = require('stevenmiller888/cssPath');
+var each = require('component/each');
+var fmt  = require('yields/fmt');
 
 /**
  * Expose `Detective`.
