@@ -3,9 +3,8 @@
  * Module dependencies.
  */
 
-var daydream  = require('./daydream')();
-var recorder  = require('./recorder')();
-var store     = require('yields/store');
+var daydream = require('./daydream')();
+var recorder = require('./recorder')();
 
 /**
  * Boot.
@@ -30,6 +29,6 @@ daydream.on('stop', function () {
   recorder.stopRecording();
   this.setIcon("black");
   var res = this.parse(recorder.recording);
-  store({'nightmare': res});
+  chrome.storage.sync.set({ 'nightmare': res });
   this.showPopup();
 });
