@@ -3,10 +3,9 @@
  * Module dependencies.
  */
 
-var Emitter   = require('component/emitter');
-var js        = require('segmentio/highlight-javascript');
-var highlight = require('segmentio/highlight')().use(js);
-var store     = require('yields/store');
+var js = require('segmentio/highlight-javascript');
+var Highlight = require('segmentio/highlight');
+var Emitter = require('component/emitter');
 
 /**
  * Expose `Popup`.
@@ -35,10 +34,13 @@ Emitter(Popup.prototype);
 
 Popup.prototype.boot = function () {
   var self = this;
+  var highlight = Highlight().use(js);
 
   var el = document.getElementsByTagName('pre')[0];
-  el.innerText = store('nightmare');
-  highlight.element(el);
+  chrome.storage.sync.get('nightmare', function(res){
+    el.innerText = res.nightmare;
+    highlight.element(el);
+  });
 
   var restart = document.getElementById('Restart');
   restart.addEventListener('click', function(event) {
