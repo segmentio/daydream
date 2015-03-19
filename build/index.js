@@ -113,10 +113,9 @@ popup.on('restart', function () {
  * Module dependencies.
  */
 
-var Emitter   = require('component/emitter');
-var js        = require('segmentio/highlight-javascript');
-var highlight = require('segmentio/highlight')().use(js);
-var store     = require('yields/store');
+var js = require('segmentio/highlight-javascript');
+var Highlight = require('segmentio/highlight');
+var Emitter = require('component/emitter');
 
 /**
  * Expose `Popup`.
@@ -145,10 +144,13 @@ Emitter(Popup.prototype);
 
 Popup.prototype.boot = function () {
   var self = this;
+  var highlight = Highlight().use(js);
 
   var el = document.getElementsByTagName('pre')[0];
-  el.innerText = store('nightmare');
-  highlight.element(el);
+  chrome.storage.sync.get('nightmare', function(res){
+    el.innerText = res.nightmare;
+    highlight.element(el);
+  });
 
   var restart = document.getElementById('Restart');
   restart.addEventListener('click', function(event) {
@@ -156,172 +158,8 @@ Popup.prototype.boot = function () {
   });
 };
 
-}, {"component/emitter":3,"segmentio/highlight-javascript":4,"segmentio/highlight":5,"yields/store":6}],
+}, {"segmentio/highlight-javascript":3,"segmentio/highlight":4,"component/emitter":5}],
 3: [function(require, module, exports) {
-
-/**
- * Expose `Emitter`.
- */
-
-module.exports = Emitter;
-
-/**
- * Initialize a new `Emitter`.
- *
- * @api public
- */
-
-function Emitter(obj) {
-  if (obj) return mixin(obj);
-};
-
-/**
- * Mixin the emitter properties.
- *
- * @param {Object} obj
- * @return {Object}
- * @api private
- */
-
-function mixin(obj) {
-  for (var key in Emitter.prototype) {
-    obj[key] = Emitter.prototype[key];
-  }
-  return obj;
-}
-
-/**
- * Listen on the given `event` with `fn`.
- *
- * @param {String} event
- * @param {Function} fn
- * @return {Emitter}
- * @api public
- */
-
-Emitter.prototype.on =
-Emitter.prototype.addEventListener = function(event, fn){
-  this._callbacks = this._callbacks || {};
-  (this._callbacks['$' + event] = this._callbacks['$' + event] || [])
-    .push(fn);
-  return this;
-};
-
-/**
- * Adds an `event` listener that will be invoked a single
- * time then automatically removed.
- *
- * @param {String} event
- * @param {Function} fn
- * @return {Emitter}
- * @api public
- */
-
-Emitter.prototype.once = function(event, fn){
-  function on() {
-    this.off(event, on);
-    fn.apply(this, arguments);
-  }
-
-  on.fn = fn;
-  this.on(event, on);
-  return this;
-};
-
-/**
- * Remove the given callback for `event` or all
- * registered callbacks.
- *
- * @param {String} event
- * @param {Function} fn
- * @return {Emitter}
- * @api public
- */
-
-Emitter.prototype.off =
-Emitter.prototype.removeListener =
-Emitter.prototype.removeAllListeners =
-Emitter.prototype.removeEventListener = function(event, fn){
-  this._callbacks = this._callbacks || {};
-
-  // all
-  if (0 == arguments.length) {
-    this._callbacks = {};
-    return this;
-  }
-
-  // specific event
-  var callbacks = this._callbacks['$' + event];
-  if (!callbacks) return this;
-
-  // remove all handlers
-  if (1 == arguments.length) {
-    delete this._callbacks['$' + event];
-    return this;
-  }
-
-  // remove specific handler
-  var cb;
-  for (var i = 0; i < callbacks.length; i++) {
-    cb = callbacks[i];
-    if (cb === fn || cb.fn === fn) {
-      callbacks.splice(i, 1);
-      break;
-    }
-  }
-  return this;
-};
-
-/**
- * Emit `event` with the given args.
- *
- * @param {String} event
- * @param {Mixed} ...
- * @return {Emitter}
- */
-
-Emitter.prototype.emit = function(event){
-  this._callbacks = this._callbacks || {};
-  var args = [].slice.call(arguments, 1)
-    , callbacks = this._callbacks['$' + event];
-
-  if (callbacks) {
-    callbacks = callbacks.slice(0);
-    for (var i = 0, len = callbacks.length; i < len; ++i) {
-      callbacks[i].apply(this, args);
-    }
-  }
-
-  return this;
-};
-
-/**
- * Return array of callbacks for `event`.
- *
- * @param {String} event
- * @return {Array}
- * @api public
- */
-
-Emitter.prototype.listeners = function(event){
-  this._callbacks = this._callbacks || {};
-  return this._callbacks['$' + event] || [];
-};
-
-/**
- * Check if this emitter has `event` handlers.
- *
- * @param {String} event
- * @return {Boolean}
- * @api public
- */
-
-Emitter.prototype.hasListeners = function(event){
-  return !! this.listeners(event).length;
-};
-
-}, {}],
-4: [function(require, module, exports) {
 
 /**
  * Expose `plugin`.
@@ -410,7 +248,7 @@ grammar.operator = /([-+]{1,2}|!|&lt;=?|>=?|={1,3}|&lt;{1,2}|>{1,2}|(&amp;){1,2}
 
 grammar.punctuation = /[{}[\];(),.:]/;
 }, {}],
-5: [function(require, module, exports) {
+4: [function(require, module, exports) {
 
 var escape = require('escape-html');
 
@@ -607,8 +445,8 @@ function lang(el){
   if (m = matcher.exec(el.className)) return m[1];
   return language(el.parentNode);
 }
-}, {"escape-html":7}],
-7: [function(require, module, exports) {
+}, {"escape-html":6}],
+6: [function(require, module, exports) {
 /**
  * Escape special characters in the given string of html.
  *
@@ -627,487 +465,167 @@ module.exports = function(html) {
 }
 
 }, {}],
-6: [function(require, module, exports) {
+5: [function(require, module, exports) {
 
 /**
- * dependencies.
+ * Expose `Emitter`.
  */
 
-var unserialize = require('unserialize');
-var each = require('each');
-var storage;
+module.exports = Emitter;
 
 /**
- * Safari throws when a user
- * blocks access to cookies / localstorage.
- */
-
-try {
-  storage = window.localStorage;
-} catch (e) {
-  storage = null;
-}
-
-/**
- * Expose `store`
- */
-
-module.exports = store;
-
-/**
- * Store the given `key`, `val`.
+ * Initialize a new `Emitter`.
  *
- * @param {String|Object} key
- * @param {Mixed} value
- * @return {Mixed}
  * @api public
  */
 
-function store(key, value){
-  var length = arguments.length;
-  if (0 == length) return all();
-  if (2 <= length) return set(key, value);
-  if (1 != length) return;
-  if (null == key) return storage.clear();
-  if ('string' == typeof key) return get(key);
-  if ('object' == typeof key) return each(key, set);
-}
-
-/**
- * supported flag.
- */
-
-store.supported = !! storage;
-
-/**
- * Set `key` to `val`.
- *
- * @param {String} key
- * @param {Mixed} val
- */
-
-function set(key, val){
-  return null == val
-    ? storage.removeItem(key)
-    : storage.setItem(key, JSON.stringify(val));
-}
-
-/**
- * Get `key`.
- *
- * @param {String} key
- * @return {Mixed}
- */
-
-function get(key){
-  return unserialize(storage.getItem(key));
-}
-
-/**
- * Get all.
- *
- * @return {Object}
- */
-
-function all(){
-  var len = storage.length;
-  var ret = {};
-  var key;
-
-  while (0 <= --len) {
-    key = storage.key(len);
-    ret[key] = get(key);
-  }
-
-  return ret;
-}
-
-}, {"unserialize":8,"each":9}],
-8: [function(require, module, exports) {
-
-/**
- * Unserialize the given "stringified" javascript.
- * 
- * @param {String} val
- * @return {Mixed}
- */
-
-module.exports = function(val){
-  try {
-    return JSON.parse(val);
-  } catch (e) {
-    return val || undefined;
-  }
-};
-
-}, {}],
-9: [function(require, module, exports) {
-
-/**
- * Module dependencies.
- */
-
-try {
-  var type = require('type');
-} catch (err) {
-  var type = require('component-type');
-}
-
-var toFunction = require('to-function');
-
-/**
- * HOP reference.
- */
-
-var has = Object.prototype.hasOwnProperty;
-
-/**
- * Iterate the given `obj` and invoke `fn(val, i)`
- * in optional context `ctx`.
- *
- * @param {String|Array|Object} obj
- * @param {Function} fn
- * @param {Object} [ctx]
- * @api public
- */
-
-module.exports = function(obj, fn, ctx){
-  fn = toFunction(fn);
-  ctx = ctx || this;
-  switch (type(obj)) {
-    case 'array':
-      return array(obj, fn, ctx);
-    case 'object':
-      if ('number' == typeof obj.length) return array(obj, fn, ctx);
-      return object(obj, fn, ctx);
-    case 'string':
-      return string(obj, fn, ctx);
-  }
+function Emitter(obj) {
+  if (obj) return mixin(obj);
 };
 
 /**
- * Iterate string chars.
- *
- * @param {String} obj
- * @param {Function} fn
- * @param {Object} ctx
- * @api private
- */
-
-function string(obj, fn, ctx) {
-  for (var i = 0; i < obj.length; ++i) {
-    fn.call(ctx, obj.charAt(i), i);
-  }
-}
-
-/**
- * Iterate object keys.
+ * Mixin the emitter properties.
  *
  * @param {Object} obj
- * @param {Function} fn
- * @param {Object} ctx
+ * @return {Object}
  * @api private
  */
 
-function object(obj, fn, ctx) {
-  for (var key in obj) {
-    if (has.call(obj, key)) {
-      fn.call(ctx, key, obj[key]);
-    }
+function mixin(obj) {
+  for (var key in Emitter.prototype) {
+    obj[key] = Emitter.prototype[key];
   }
+  return obj;
 }
 
 /**
- * Iterate array-ish.
+ * Listen on the given `event` with `fn`.
  *
- * @param {Array|Object} obj
+ * @param {String} event
  * @param {Function} fn
- * @param {Object} ctx
- * @api private
- */
-
-function array(obj, fn, ctx) {
-  for (var i = 0; i < obj.length; ++i) {
-    fn.call(ctx, obj[i], i);
-  }
-}
-
-}, {"type":10,"component-type":10,"to-function":11}],
-10: [function(require, module, exports) {
-
-/**
- * toString ref.
- */
-
-var toString = Object.prototype.toString;
-
-/**
- * Return the type of `val`.
- *
- * @param {Mixed} val
- * @return {String}
+ * @return {Emitter}
  * @api public
  */
 
-module.exports = function(val){
-  switch (toString.call(val)) {
-    case '[object Function]': return 'function';
-    case '[object Date]': return 'date';
-    case '[object RegExp]': return 'regexp';
-    case '[object Arguments]': return 'arguments';
-    case '[object Array]': return 'array';
-    case '[object String]': return 'string';
-  }
-
-  if (val === null) return 'null';
-  if (val === undefined) return 'undefined';
-  if (val && val.nodeType === 1) return 'element';
-  if (val === Object(val)) return 'object';
-
-  return typeof val;
+Emitter.prototype.on =
+Emitter.prototype.addEventListener = function(event, fn){
+  this._callbacks = this._callbacks || {};
+  (this._callbacks['$' + event] = this._callbacks['$' + event] || [])
+    .push(fn);
+  return this;
 };
 
-}, {}],
-11: [function(require, module, exports) {
-
 /**
- * Module Dependencies
- */
-
-var expr;
-try {
-  expr = require('props');
-} catch(e) {
-  expr = require('component-props');
-}
-
-/**
- * Expose `toFunction()`.
- */
-
-module.exports = toFunction;
-
-/**
- * Convert `obj` to a `Function`.
+ * Adds an `event` listener that will be invoked a single
+ * time then automatically removed.
  *
- * @param {Mixed} obj
- * @return {Function}
- * @api private
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
  */
 
-function toFunction(obj) {
-  switch ({}.toString.call(obj)) {
-    case '[object Object]':
-      return objectToFunction(obj);
-    case '[object Function]':
-      return obj;
-    case '[object String]':
-      return stringToFunction(obj);
-    case '[object RegExp]':
-      return regexpToFunction(obj);
-    default:
-      return defaultToFunction(obj);
+Emitter.prototype.once = function(event, fn){
+  function on() {
+    this.off(event, on);
+    fn.apply(this, arguments);
   }
-}
+
+  on.fn = fn;
+  this.on(event, on);
+  return this;
+};
 
 /**
- * Default to strict equality.
+ * Remove the given callback for `event` or all
+ * registered callbacks.
  *
- * @param {Mixed} val
- * @return {Function}
- * @api private
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
  */
 
-function defaultToFunction(val) {
-  return function(obj){
-    return val === obj;
-  };
-}
+Emitter.prototype.off =
+Emitter.prototype.removeListener =
+Emitter.prototype.removeAllListeners =
+Emitter.prototype.removeEventListener = function(event, fn){
+  this._callbacks = this._callbacks || {};
 
-/**
- * Convert `re` to a function.
- *
- * @param {RegExp} re
- * @return {Function}
- * @api private
- */
-
-function regexpToFunction(re) {
-  return function(obj){
-    return re.test(obj);
-  };
-}
-
-/**
- * Convert property `str` to a function.
- *
- * @param {String} str
- * @return {Function}
- * @api private
- */
-
-function stringToFunction(str) {
-  // immediate such as "> 20"
-  if (/^ *\W+/.test(str)) return new Function('_', 'return _ ' + str);
-
-  // properties such as "name.first" or "age > 18" or "age > 18 && age < 36"
-  return new Function('_', 'return ' + get(str));
-}
-
-/**
- * Convert `object` to a function.
- *
- * @param {Object} object
- * @return {Function}
- * @api private
- */
-
-function objectToFunction(obj) {
-  var match = {};
-  for (var key in obj) {
-    match[key] = typeof obj[key] === 'string'
-      ? defaultToFunction(obj[key])
-      : toFunction(obj[key]);
+  // all
+  if (0 == arguments.length) {
+    this._callbacks = {};
+    return this;
   }
-  return function(val){
-    if (typeof val !== 'object') return false;
-    for (var key in match) {
-      if (!(key in val)) return false;
-      if (!match[key](val[key])) return false;
+
+  // specific event
+  var callbacks = this._callbacks['$' + event];
+  if (!callbacks) return this;
+
+  // remove all handlers
+  if (1 == arguments.length) {
+    delete this._callbacks['$' + event];
+    return this;
+  }
+
+  // remove specific handler
+  var cb;
+  for (var i = 0; i < callbacks.length; i++) {
+    cb = callbacks[i];
+    if (cb === fn || cb.fn === fn) {
+      callbacks.splice(i, 1);
+      break;
     }
-    return true;
-  };
-}
+  }
+  return this;
+};
 
 /**
- * Built the getter function. Supports getter style functions
+ * Emit `event` with the given args.
  *
- * @param {String} str
- * @return {String}
- * @api private
+ * @param {String} event
+ * @param {Mixed} ...
+ * @return {Emitter}
  */
 
-function get(str) {
-  var props = expr(str);
-  if (!props.length) return '_.' + str;
+Emitter.prototype.emit = function(event){
+  this._callbacks = this._callbacks || {};
+  var args = [].slice.call(arguments, 1)
+    , callbacks = this._callbacks['$' + event];
 
-  var val, i, prop;
-  for (i = 0; i < props.length; i++) {
-    prop = props[i];
-    val = '_.' + prop;
-    val = "('function' == typeof " + val + " ? " + val + "() : " + val + ")";
-
-    // mimic negative lookbehind to avoid problems with nested properties
-    str = stripNested(prop, str, val);
+  if (callbacks) {
+    callbacks = callbacks.slice(0);
+    for (var i = 0, len = callbacks.length; i < len; ++i) {
+      callbacks[i].apply(this, args);
+    }
   }
 
-  return str;
-}
+  return this;
+};
 
 /**
- * Mimic negative lookbehind to avoid problems with nested properties.
+ * Return array of callbacks for `event`.
  *
- * See: http://blog.stevenlevithan.com/archives/mimic-lookbehind-javascript
- *
- * @param {String} prop
- * @param {String} str
- * @param {String} val
- * @return {String}
- * @api private
- */
-
-function stripNested (prop, str, val) {
-  return str.replace(new RegExp('(\\.)?' + prop, 'g'), function($0, $1) {
-    return $1 ? $0 : val;
-  });
-}
-
-}, {"props":12,"component-props":12}],
-12: [function(require, module, exports) {
-/**
- * Global Names
- */
-
-var globals = /\b(this|Array|Date|Object|Math|JSON)\b/g;
-
-/**
- * Return immediate identifiers parsed from `str`.
- *
- * @param {String} str
- * @param {String|Function} map function or prefix
+ * @param {String} event
  * @return {Array}
  * @api public
  */
 
-module.exports = function(str, fn){
-  var p = unique(props(str));
-  if (fn && 'string' == typeof fn) fn = prefixed(fn);
-  if (fn) return map(str, p, fn);
-  return p;
+Emitter.prototype.listeners = function(event){
+  this._callbacks = this._callbacks || {};
+  return this._callbacks['$' + event] || [];
 };
 
 /**
- * Return immediate identifiers in `str`.
+ * Check if this emitter has `event` handlers.
  *
- * @param {String} str
- * @return {Array}
- * @api private
+ * @param {String} event
+ * @return {Boolean}
+ * @api public
  */
 
-function props(str) {
-  return str
-    .replace(/\.\w+|\w+ *\(|"[^"]*"|'[^']*'|\/([^/]+)\//g, '')
-    .replace(globals, '')
-    .match(/[$a-zA-Z_]\w*/g)
-    || [];
-}
-
-/**
- * Return `str` with `props` mapped with `fn`.
- *
- * @param {String} str
- * @param {Array} props
- * @param {Function} fn
- * @return {String}
- * @api private
- */
-
-function map(str, props, fn) {
-  var re = /\.\w+|\w+ *\(|"[^"]*"|'[^']*'|\/([^/]+)\/|[a-zA-Z_]\w*/g;
-  return str.replace(re, function(_){
-    if ('(' == _[_.length - 1]) return fn(_);
-    if (!~props.indexOf(_)) return _;
-    return fn(_);
-  });
-}
-
-/**
- * Return unique array.
- *
- * @param {Array} arr
- * @return {Array}
- * @api private
- */
-
-function unique(arr) {
-  var ret = [];
-
-  for (var i = 0; i < arr.length; i++) {
-    if (~ret.indexOf(arr[i])) continue;
-    ret.push(arr[i]);
-  }
-
-  return ret;
-}
-
-/**
- * Map with prefix `str`.
- */
-
-function prefixed(str) {
-  return function(_){
-    return str + _;
-  };
-}
+Emitter.prototype.hasListeners = function(event){
+  return !! this.listeners(event).length;
+};
 
 }, {}]}, {}, {"1":""})
