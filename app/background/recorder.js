@@ -3,10 +3,15 @@
  * Module dependencies.
  */
 
-var each      = require('component/each');
-var empty     = require('component/empty');
-var uid       = require('matthewmueller/uid');
 var Analytics = require('./analytics-node');
+var uid = require('matthewmueller/uid');
+var empty = require('component/empty');
+var each = require('component/each');
+
+/**
+ * Analytics.
+ */
+
 var analytics = new Analytics('J0KCCfAPH6oXQJ8Np1IwI0HgAGW5oFOX');
 
 var userId = localStorage['userId'];
