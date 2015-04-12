@@ -2,20 +2,20 @@
 BIN = node_modules/.bin
 DUO = $(BIN)/duo
 
-BG := $(shell find app/background/index.js)
-FG := $(shell find app/foreground/index.js)
+BG := $(shell find lib/background/index.js)
+FG := $(shell find lib/foreground/index.js)
 
 default: build
 
 build: node_modules
 	@mkdir -p build
 	@mkdir -p build/images
-	@cp app/manifest.json build/manifest.json
-	@cp app/background/images/icon-black.png build/images/icon-black.png
-	@cp app/background/images/icon-green.png build/images/icon-green.png
-	@cp app/foreground/popup/index.html build/index.html
-	@cp app/foreground/popup/index.css build/index.css
-	@$(DUO) app/foreground/popup/index.js > build/index.js
+	@cp lib/manifest.json build/manifest.json
+	@cp lib/background/images/icon-black.png build/images/icon-black.png
+	@cp lib/background/images/icon-green.png build/images/icon-green.png
+	@cp lib/foreground/popup/index.html build/index.html
+	@cp lib/foreground/popup/index.css build/index.css
+	@$(DUO) lib/foreground/popup/index.js > build/index.js
 	@$(DUO) $(BG) > build/background.js
 	@$(DUO) $(FG) > build/foreground.js
 
