@@ -3,7 +3,7 @@
 * Module dependencies.
 */
 
-var cssPath = require('stevenmiller888/cssPath');
+var cssPath = require('stevenmiller888/component-path');
 var each = require('component/each');
 var fmt  = require('yields/fmt');
 
