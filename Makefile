@@ -11,8 +11,8 @@ build: node_modules
 	@mkdir -p build
 	@mkdir -p build/images
 	@cp lib/manifest.json build/manifest.json
-	@cp lib/background/images/icon-black.png build/images/icon-black.png
-	@cp lib/background/images/icon-green.png build/images/icon-green.png
+	@cp lib/images/icon-black.png build/images/icon-black.png
+	@cp lib/images/icon-green.png build/images/icon-green.png
 	@cp lib/foreground/popup/index.html build/index.html
 	@cp lib/foreground/popup/index.css build/index.css
 	@$(DUO) lib/foreground/popup/index.js > build/index.js
