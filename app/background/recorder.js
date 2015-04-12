@@ -60,6 +60,8 @@ Recorder.prototype.startRecording = function(){
     var message = request;
     self.record(message);
   });
+  
+  analytics.track({ event: 'Started recording', userId: newId });
 };
 
 /**
@@ -95,14 +97,20 @@ Recorder.prototype.detectUrl = function(){
       case 'reload':
         if (!self.recording.length) return self.record(["goto", details.url]);
         self.record(['reload']);
+        
+        analytics.track({ event: 'Reloaded page', userId: newId });
         break;
       case 'typed':
         if (!from.length) return self.record(["goto", details.url]);
         if (from[0] === "from_address_bar") return self.record(["goto", details.url]);
         if (from[0] === "server_redirect" && from[1] === "from_address_bar") return self.record(["goto", details.url]);
+        
+        analytics.track({ event: 'Changed url', userId: newId });
         break;
       case 'auto_bookmark':
         self.record(["goto", details.url]);
+        
+        analytics.track({ event: 'Changed url', userId: newId });
         break;
     }
   });
@@ -117,6 +125,8 @@ Recorder.prototype.detectScreenshots = function(){
   
   chrome.commands.onCommand.addListener(function(command){
     if (command === "detect-screenshot") self.record(['screenshot', 'index.png']);
+    
+    analytics.track({ event: 'Took screenshot', userId: newId });
   });
 };
 
@@ -129,6 +139,8 @@ Recorder.prototype.stopRecording = function(){
   chrome.webNavigation.onCommitted.removeListener();
   chrome.runtime.onMessage.removeListener();
   chrome.tabs.onUpdated.removeListener();
+
+  analytics.track({ event: 'Stopped recording', userId: newId });
 };
 
 /**
