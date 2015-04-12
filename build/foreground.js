@@ -93,7 +93,7 @@ var each = require('component/each');
 var fmt  = require('yields/fmt');
 
 /**
- * Map events to elements.
+ * Events and elements.
  */
 
 detect(['a', 'button'], 'click');
