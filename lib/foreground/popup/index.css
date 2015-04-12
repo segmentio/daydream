@@ -1,0 +1,86 @@
+body {
+  width: 330px;
+  height: 230px;
+  background-color: f8f5f0;
+}
+
+pre {
+  font-size: 13px;
+  overflow: scroll;
+}
+
+.Restart-Button {
+  position: relative;
+  left: 120px;
+  top: 190px;
+  cursor: pointer;
+  border-radius: 50px;
+  border-color: #5CCC5C;
+  border-style: none;
+  padding: 3px 15px 5px;
+  text-transform: lowercase;
+  font-size: 16px;
+  line-height: 1;
+  display: inline-block;
+  text-decoration: none;
+  font-family: 'freight-sans-pro SC', Verdana, Geneva, sans-serif;
+  background-color: #5CCC5C;
+  color: #fff;
+  margin: 10px;
+}
+
+.Restart-Button:hover {
+  background-color: #1bf655;
+}
+
+.Restart-Button:focus {
+  outline: none;
+}
+
+.Highlight-line::before {
+  content: counter(loc);
+  counter-increment: loc;
+  position: absolute;
+  left: 22px;
+  opacity: 0.5;
+}
+
+/**
+* Code highlighting.
+*/
+
+.Highlight-keyword {
+  font-weight: bold;
+  color: #403E3B;
+}
+
+.Highlight-class {
+  color: #de6339;
+}
+
+.Highlight-constant {
+  color: #268bd2;
+}
+
+.Highlight-function,
+.Highlight-method {
+  color: #50B350;
+}
+
+.Highlight-boolean,
+.Highlight-number {
+  color: #6c71c4;
+}
+
+.Highlight-string {
+  color: #e2a413;
+}
+
+.Highlight-comment {
+  color: #A59985;
+}
+
+.Highlight-punctuation,
+.Highlight-operator {
+  color: #A59985;
+}
