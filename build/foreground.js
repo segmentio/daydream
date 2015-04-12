@@ -85,27 +85,6 @@
 1: [function(require, module, exports) {
 
 /**
- * Module dependencies.
- */
-
-var Detective = require('./detective');
-
-/**
- * Initialize a new Detective.
- */
-
-var detective = Detective();
-
-/**
- * Start detecting.
- */
-
-detective.boot();
-
-}, {"./detective":2}],
-2: [function(require, module, exports) {
-
-/**
 * Module dependencies.
 */
 
@@ -114,29 +93,12 @@ var each = require('component/each');
 var fmt  = require('yields/fmt');
 
 /**
- * Expose `Detective`.
+ * Events and elements.
  */
 
-module.exports = Detective;
-
-/**
- * Detective.
- */
-
-function Detective () {
-  if (!(this instanceof Detective)) return new Detective();
-  return this;
-}
-
-/**
- * Boot.
- */
-
-Detective.prototype.boot = function () {
-  this.detect(['a', 'button'], 'click');
-  this.detect(['input'], 'keydown');
-  this.detect([], 'copy');
-};
+detect(['a', 'button'], 'click');
+detect(['input'], 'keydown');
+detect([], 'copy');
 
 /**
  * Detect.
@@ -145,16 +107,15 @@ Detective.prototype.boot = function () {
  * @param {String} listener
  */
 
-Detective.prototype.detect = function (tagArr, listener) {
-  var self = this;
-  if (!tagArr.length) return self.copyText();
+function detect(tagArr, listener){
+  if (!tagArr.length) return copyText();
 
-  each(tagArr, function (tag) {
+  each(tagArr, function(tag){
     var els = document.getElementsByTagName(tag);
-    each(els, function (el) {
-      el.addEventListener(listener, function (event) {
-        if (listener === 'click') self.handle('click', event.target);
-        if (listener === 'keydown' && event.keyCode === 9) self.handle('type', event.target);
+    each(els, function(el){
+      el.addEventListener(listener, function(event){
+        if (listener === 'click') handle('click', event.target);
+        if (listener === 'keydown' && event.keyCode === 9) handle('type', event.target);
       });
     });
   });
@@ -164,12 +125,11 @@ Detective.prototype.detect = function (tagArr, listener) {
 * Copy text.
 */
 
-Detective.prototype.copyText = function () {
-  var self = this;
-  window.onkeydown = function (event) {
+function copyText(){
+  window.onkeydown = function(event){
     if (event.keyCode === 67 && event.ctrlKey) {
       var selObj = window.getSelection();
-      self.handle('evaluate', selObj.focusNode);
+      handle('evaluate', selObj.focusNode);
     }
   };
 };
@@ -181,15 +141,15 @@ Detective.prototype.copyText = function () {
  * @param {Node} node
  */
 
-Detective.prototype.handle = function (event, node) {
+function handle(event, node){
   var path = cssPath(node);
   var message = [event, path];
   if (node.value) message.push(node.value);
   chrome.runtime.sendMessage(message);
 };
 
-}, {"stevenmiller888/cssPath":3,"component/each":4,"yields/fmt":5}],
-3: [function(require, module, exports) {
+}, {"stevenmiller888/cssPath":2,"component/each":3,"yields/fmt":4}],
+2: [function(require, module, exports) {
 
 /**
  * Expose `cssPath`.
@@ -283,7 +243,7 @@ function cssPath(el) {
 }
 
 }, {}],
-4: [function(require, module, exports) {
+3: [function(require, module, exports) {
 
 /**
  * Module dependencies.
@@ -374,8 +334,8 @@ function array(obj, fn, ctx) {
   }
 }
 
-}, {"type":6,"component-type":6,"to-function":7}],
-6: [function(require, module, exports) {
+}, {"type":5,"component-type":5,"to-function":6}],
+5: [function(require, module, exports) {
 
 /**
  * toString ref.
@@ -410,7 +370,7 @@ module.exports = function(val){
 };
 
 }, {}],
-7: [function(require, module, exports) {
+6: [function(require, module, exports) {
 
 /**
  * Module Dependencies
@@ -564,8 +524,8 @@ function stripNested (prop, str, val) {
   });
 }
 
-}, {"props":8,"component-props":8}],
-8: [function(require, module, exports) {
+}, {"props":7,"component-props":7}],
+7: [function(require, module, exports) {
 /**
  * Global Names
  */
@@ -653,7 +613,7 @@ function prefixed(str) {
 }
 
 }, {}],
-5: [function(require, module, exports) {
+4: [function(require, module, exports) {
 
 /**
  * toString.

@@ -85,65 +85,25 @@
 1: [function(require, module, exports) {
 
 /**
- * Module dependencies.
+ * Boot Daydream.
  */
 
-var daydream = require('./daydream')();
-var recorder = require('./recorder')();
-
-/**
- * Boot.
- */
-
+var Daydream = require('./daydream');
+var daydream = Daydream();
 daydream.boot();
-
-/**
- * Start.
- */
-
-daydream.on('start', function () {
-  recorder.startRecording();
-  this.setIcon("green");
-});
-
-/**
- * Stop.
- */
-
-daydream.on('stop', function () {
-  recorder.stopRecording();
-  this.setIcon("black");
-  var res = this.parse(recorder.recording);
-  chrome.storage.sync.set({ 'nightmare': res });
-  this.showPopup();
-});
-
-}, {"./daydream":2,"./recorder":3}],
+}, {"./daydream":2}],
 2: [function(require, module, exports) {
 
 /**
  * Module dependencies.
  */
 
-var Analytics = require('./analytics-node');
 var Emitter = require('component/emitter');
 var uid  = require('matthewmueller/uid');
+var recorder = require('./recorder')();
 var each = require('component/each');
 var os = require('component/os');
 var fmt = require('yields/fmt');
-
-/**
- * Analytics.
- */
-
-var analytics = new Analytics('J0KCCfAPH6oXQJ8Np1IwI0HgAGW5oFOX');
-
-var userId = localStorage['userId'];
-
-if (!userId) {
-  userId = uid();
-  localStorage['userId'] = userId;
-}
 
 /**
  * Expose `Daydream`.
@@ -155,52 +115,27 @@ module.exports = Daydream;
  * Daydream.
  */
 
-function Daydream () {
+function Daydream(){
   if (!(this instanceof Daydream)) return new Daydream();
   this.isRunning = false;
-  return this;
 }
-
-/**
- * Mixin.
- */
-
-Emitter(Daydream.prototype);
 
 /**
  * Boot.
  */
 
-Daydream.prototype.boot = function () {
+Daydream.prototype.boot = function(){
   var self = this;
-
-  analytics.identify({
-    userId: userId,
-    version: chrome.app.getDetails().version,
-    languages: window.navigator.languages
-  });
-
-  chrome.browserAction.onClicked.addListener(function () {
+  chrome.browserAction.onClicked.addListener(function(){
     if (!self.isRunning) {
-      self.emit('start');
-
-      analytics.track({
-        userId: userId,
-        event: 'Clicked icon',
-        start: true,
-        stop: false,
-        background: true
-      });
+      recorder.startRecording();
+      self.setIcon("green");
     } else {
-      self.emit('stop');
-      
-      analytics.track({
-        userId: userId,
-        event: 'Clicked icon',
-        start: false,
-        stop: true,
-        background: true
-      });
+      recorder.stopRecording();
+      self.setIcon("black");
+      var res = self.parse(recorder.recording);
+      chrome.storage.sync.set({ 'nightmare': res });
+      self.showPopup();
     }
     self.isRunning = !self.isRunning;
   });
@@ -212,7 +147,7 @@ Daydream.prototype.boot = function () {
  * @param {String} color
  */
 
-Daydream.prototype.setIcon = function (color) {
+Daydream.prototype.setIcon = function(color){
   if (color === "green") return chrome.browserAction.setIcon({path: 'images/icon-green.png'});
   if (color === "black") return chrome.browserAction.setIcon({path: 'images/icon-black.png'});
 };
@@ -221,12 +156,7 @@ Daydream.prototype.setIcon = function (color) {
  * Show the popup.
  */
 
-Daydream.prototype.showPopup = function () {
-  analytics.track({
-    userId: userId,
-    event: 'Displayed Popup',
-    background: true
-  });
+Daydream.prototype.showPopup = function(){
   chrome.browserAction.setPopup({popup: 'index.html'});
   chrome.browserAction.setBadgeText({text: '1'});
 };
@@ -237,7 +167,7 @@ Daydream.prototype.showPopup = function () {
  * @param {Array} recording
  */
 
-Daydream.prototype.parse = function (recording) {
+Daydream.prototype.parse = function(recording){
   var newLine = '\n';
   if (os == 'windows') newLine = '\r\n';
 
@@ -288,8 +218,350 @@ Daydream.prototype.parse = function (recording) {
   return result;
 };
 
-}, {"./analytics-node":4,"component/emitter":5,"matthewmueller/uid":6,"component/each":7,"component/os":8,"yields/fmt":9}],
+}, {"component/emitter":3,"matthewmueller/uid":4,"./recorder":5,"component/each":6,"component/os":7,"yields/fmt":8}],
+3: [function(require, module, exports) {
+
+/**
+ * Expose `Emitter`.
+ */
+
+module.exports = Emitter;
+
+/**
+ * Initialize a new `Emitter`.
+ *
+ * @api public
+ */
+
+function Emitter(obj) {
+  if (obj) return mixin(obj);
+};
+
+/**
+ * Mixin the emitter properties.
+ *
+ * @param {Object} obj
+ * @return {Object}
+ * @api private
+ */
+
+function mixin(obj) {
+  for (var key in Emitter.prototype) {
+    obj[key] = Emitter.prototype[key];
+  }
+  return obj;
+}
+
+/**
+ * Listen on the given `event` with `fn`.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.on =
+Emitter.prototype.addEventListener = function(event, fn){
+  this._callbacks = this._callbacks || {};
+  (this._callbacks['$' + event] = this._callbacks['$' + event] || [])
+    .push(fn);
+  return this;
+};
+
+/**
+ * Adds an `event` listener that will be invoked a single
+ * time then automatically removed.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.once = function(event, fn){
+  function on() {
+    this.off(event, on);
+    fn.apply(this, arguments);
+  }
+
+  on.fn = fn;
+  this.on(event, on);
+  return this;
+};
+
+/**
+ * Remove the given callback for `event` or all
+ * registered callbacks.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.off =
+Emitter.prototype.removeListener =
+Emitter.prototype.removeAllListeners =
+Emitter.prototype.removeEventListener = function(event, fn){
+  this._callbacks = this._callbacks || {};
+
+  // all
+  if (0 == arguments.length) {
+    this._callbacks = {};
+    return this;
+  }
+
+  // specific event
+  var callbacks = this._callbacks['$' + event];
+  if (!callbacks) return this;
+
+  // remove all handlers
+  if (1 == arguments.length) {
+    delete this._callbacks['$' + event];
+    return this;
+  }
+
+  // remove specific handler
+  var cb;
+  for (var i = 0; i < callbacks.length; i++) {
+    cb = callbacks[i];
+    if (cb === fn || cb.fn === fn) {
+      callbacks.splice(i, 1);
+      break;
+    }
+  }
+  return this;
+};
+
+/**
+ * Emit `event` with the given args.
+ *
+ * @param {String} event
+ * @param {Mixed} ...
+ * @return {Emitter}
+ */
+
+Emitter.prototype.emit = function(event){
+  this._callbacks = this._callbacks || {};
+  var args = [].slice.call(arguments, 1)
+    , callbacks = this._callbacks['$' + event];
+
+  if (callbacks) {
+    callbacks = callbacks.slice(0);
+    for (var i = 0, len = callbacks.length; i < len; ++i) {
+      callbacks[i].apply(this, args);
+    }
+  }
+
+  return this;
+};
+
+/**
+ * Return array of callbacks for `event`.
+ *
+ * @param {String} event
+ * @return {Array}
+ * @api public
+ */
+
+Emitter.prototype.listeners = function(event){
+  this._callbacks = this._callbacks || {};
+  return this._callbacks['$' + event] || [];
+};
+
+/**
+ * Check if this emitter has `event` handlers.
+ *
+ * @param {String} event
+ * @return {Boolean}
+ * @api public
+ */
+
+Emitter.prototype.hasListeners = function(event){
+  return !! this.listeners(event).length;
+};
+
+}, {}],
 4: [function(require, module, exports) {
+/**
+ * Export `uid`
+ */
+
+module.exports = uid;
+
+/**
+ * Create a `uid`
+ *
+ * @param {String} len
+ * @return {String} uid
+ */
+
+function uid(len) {
+  len = len || 7;
+  return Math.random().toString(35).substr(2, len);
+}
+
+}, {}],
+5: [function(require, module, exports) {
+
+/**
+ * Module dependencies.
+ */
+
+var Analytics = require('./analytics-node');
+var uid = require('matthewmueller/uid');
+var empty = require('component/empty');
+var each = require('component/each');
+
+/**
+ * Analytics.
+ */
+
+var analytics = new Analytics('J0KCCfAPH6oXQJ8Np1IwI0HgAGW5oFOX');
+var oldId = localStorage['userId'];
+var newId = oldId || uid();
+if (!oldId) localStorage['userId'] = newId;
+
+/**
+ * Expose `Recorder`.
+ */
+
+module.exports = Recorder;
+
+/**
+ * Recorder.
+ */
+
+function Recorder(){
+  if (!(this instanceof Recorder)) return new Recorder();
+  this.recording = [];
+}
+
+/**
+ * Record a message.
+ *
+ * @param {String} message
+ */
+
+Recorder.prototype.record = function(message){
+  var lastElement = this.recording[this.recording.length - 1];
+  if (!lastElement) return this.recording.push(message);
+  if (lastElement[1] === message[1]) return;
+  this.recording.push(message);
+};
+
+/**
+ * Start recording.
+ */
+
+Recorder.prototype.startRecording = function(){
+  var self = this;
+
+  this.detectScreenshots();
+  this.detectUrl();
+  this.detectEvents();
+
+  chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    var message = request;
+    self.record(message);
+  });
+  
+  analytics.track({ event: 'Started recording', userId: newId });
+};
+
+/**
+ * Record events on the page.
+ */
+
+Recorder.prototype.detectEvents = function(){
+  chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
+    inject('foreground.js', tabs[0].id);
+  });
+
+  chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
+    if (changeInfo.status == 'complete') {
+      chrome.tabs.query({currentWindow: true, active: true}, function (tabs){
+        if (tabId === tabs[0].id) inject('foreground.js', tabs[0].id);
+      });
+    }
+  });
+};
+
+/**
+ * Detect the url.
+ */
+
+Recorder.prototype.detectUrl = function(){
+  var self = this;
+  
+  chrome.webNavigation.onCommitted.addListener(function(details){
+    var type = details.transitionType;
+    var from = details.transitionQualifiers;
+    
+    switch (type) {
+      case 'reload':
+        if (!self.recording.length) return self.record(["goto", details.url]);
+        self.record(['reload']);
+        
+        analytics.track({ event: 'Reloaded page', userId: newId });
+        break;
+      case 'typed':
+        if (!from.length) return self.record(["goto", details.url]);
+        if (from[0] === "from_address_bar") return self.record(["goto", details.url]);
+        if (from[0] === "server_redirect" && from[1] === "from_address_bar") return self.record(["goto", details.url]);
+        
+        analytics.track({ event: 'Changed url', userId: newId });
+        break;
+      case 'auto_bookmark':
+        self.record(["goto", details.url]);
+        
+        analytics.track({ event: 'Changed url', userId: newId });
+        break;
+    }
+  });
+};
+
+/**
+ * Detect screenshots.
+ */
+
+Recorder.prototype.detectScreenshots = function(){
+  var self = this;
+  
+  chrome.commands.onCommand.addListener(function(command){
+    if (command === "detect-screenshot") self.record(['screenshot', 'index.png']);
+    
+    analytics.track({ event: 'Took screenshot', userId: newId });
+  });
+};
+
+/**
+ * Stop recording.
+ */
+
+Recorder.prototype.stopRecording = function(){
+  chrome.commands.onCommand.removeListener();
+  chrome.webNavigation.onCommitted.removeListener();
+  chrome.runtime.onMessage.removeListener();
+  chrome.tabs.onUpdated.removeListener();
+
+  analytics.track({ event: 'Stopped recording', userId: newId });
+};
+
+/**
+ * Helper function to inject a content script.
+ *
+ * @param {String} name
+ * @param {Number} id
+ */
+
+function inject(name, id){
+  chrome.tabs.executeScript(id, {file: name});
+};
+
+}, {"./analytics-node":9,"matthewmueller/uid":4,"component/empty":10,"component/each":6}],
+9: [function(require, module, exports) {
 ! function(e) {
     if ("object" == typeof exports && "undefined" != typeof module) module.exports = e();
     else if ("function" == typeof define && define.amd) define([], e);
@@ -12325,191 +12597,39 @@ Daydream.prototype.parse = function (recording) {
     }, {}, [1])(1)
 });
 }, {}],
-5: [function(require, module, exports) {
+10: [function(require, module, exports) {
 
-/**
- * Expose `Emitter`.
- */
+var isArray = require('isarray');
 
-module.exports = Emitter;
+function empty(x) {
+  // Arrays
+  if (isArray(x)) {
+    x.length = 0;
+  } 
 
-/**
- * Initialize a new `Emitter`.
- *
- * @api public
- */
-
-function Emitter(obj) {
-  if (obj) return mixin(obj);
-};
-
-/**
- * Mixin the emitter properties.
- *
- * @param {Object} obj
- * @return {Object}
- * @api private
- */
-
-function mixin(obj) {
-  for (var key in Emitter.prototype) {
-    obj[key] = Emitter.prototype[key];
+  // HTML Elements
+  else if (x instanceof HTMLElement) {
+    while (x.firstChild) {
+      x.removeChild(x.firstChild);
+    }
   }
-  return obj;
+
+  // Array-like objects
+  else if ((typeof x.length) == 'number') {
+    Array.prototype.splice.call(x, 0, x.length);
+  }
 }
 
-/**
- * Listen on the given `event` with `fn`.
- *
- * @param {String} event
- * @param {Function} fn
- * @return {Emitter}
- * @api public
- */
+module.exports = empty;
 
-Emitter.prototype.on =
-Emitter.prototype.addEventListener = function(event, fn){
-  this._callbacks = this._callbacks || {};
-  (this._callbacks['$' + event] = this._callbacks['$' + event] || [])
-    .push(fn);
-  return this;
-};
-
-/**
- * Adds an `event` listener that will be invoked a single
- * time then automatically removed.
- *
- * @param {String} event
- * @param {Function} fn
- * @return {Emitter}
- * @api public
- */
-
-Emitter.prototype.once = function(event, fn){
-  function on() {
-    this.off(event, on);
-    fn.apply(this, arguments);
-  }
-
-  on.fn = fn;
-  this.on(event, on);
-  return this;
-};
-
-/**
- * Remove the given callback for `event` or all
- * registered callbacks.
- *
- * @param {String} event
- * @param {Function} fn
- * @return {Emitter}
- * @api public
- */
-
-Emitter.prototype.off =
-Emitter.prototype.removeListener =
-Emitter.prototype.removeAllListeners =
-Emitter.prototype.removeEventListener = function(event, fn){
-  this._callbacks = this._callbacks || {};
-
-  // all
-  if (0 == arguments.length) {
-    this._callbacks = {};
-    return this;
-  }
-
-  // specific event
-  var callbacks = this._callbacks['$' + event];
-  if (!callbacks) return this;
-
-  // remove all handlers
-  if (1 == arguments.length) {
-    delete this._callbacks['$' + event];
-    return this;
-  }
-
-  // remove specific handler
-  var cb;
-  for (var i = 0; i < callbacks.length; i++) {
-    cb = callbacks[i];
-    if (cb === fn || cb.fn === fn) {
-      callbacks.splice(i, 1);
-      break;
-    }
-  }
-  return this;
-};
-
-/**
- * Emit `event` with the given args.
- *
- * @param {String} event
- * @param {Mixed} ...
- * @return {Emitter}
- */
-
-Emitter.prototype.emit = function(event){
-  this._callbacks = this._callbacks || {};
-  var args = [].slice.call(arguments, 1)
-    , callbacks = this._callbacks['$' + event];
-
-  if (callbacks) {
-    callbacks = callbacks.slice(0);
-    for (var i = 0, len = callbacks.length; i < len; ++i) {
-      callbacks[i].apply(this, args);
-    }
-  }
-
-  return this;
-};
-
-/**
- * Return array of callbacks for `event`.
- *
- * @param {String} event
- * @return {Array}
- * @api public
- */
-
-Emitter.prototype.listeners = function(event){
-  this._callbacks = this._callbacks || {};
-  return this._callbacks['$' + event] || [];
-};
-
-/**
- * Check if this emitter has `event` handlers.
- *
- * @param {String} event
- * @return {Boolean}
- * @api public
- */
-
-Emitter.prototype.hasListeners = function(event){
-  return !! this.listeners(event).length;
+}, {"isarray":11}],
+11: [function(require, module, exports) {
+module.exports = Array.isArray || function (arr) {
+  return Object.prototype.toString.call(arr) == '[object Array]';
 };
 
 }, {}],
 6: [function(require, module, exports) {
-/**
- * Export `uid`
- */
-
-module.exports = uid;
-
-/**
- * Create a `uid`
- *
- * @param {String} len
- * @return {String} uid
- */
-
-function uid(len) {
-  len = len || 7;
-  return Math.random().toString(35).substr(2, len);
-}
-
-}, {}],
-7: [function(require, module, exports) {
 
 /**
  * Module dependencies.
@@ -12600,8 +12720,8 @@ function array(obj, fn, ctx) {
   }
 }
 
-}, {"type":10,"component-type":10,"to-function":11}],
-10: [function(require, module, exports) {
+}, {"type":12,"component-type":12,"to-function":13}],
+12: [function(require, module, exports) {
 
 /**
  * toString ref.
@@ -12636,7 +12756,7 @@ module.exports = function(val){
 };
 
 }, {}],
-11: [function(require, module, exports) {
+13: [function(require, module, exports) {
 
 /**
  * Module Dependencies
@@ -12790,8 +12910,8 @@ function stripNested (prop, str, val) {
   });
 }
 
-}, {"props":12,"component-props":12}],
-12: [function(require, module, exports) {
+}, {"props":14,"component-props":14}],
+14: [function(require, module, exports) {
 /**
  * Global Names
  */
@@ -12879,7 +12999,7 @@ function prefixed(str) {
 }
 
 }, {}],
-8: [function(require, module, exports) {
+7: [function(require, module, exports) {
 
 
 module.exports = os();
@@ -12892,7 +13012,7 @@ function os() {
 }
 
 }, {}],
-9: [function(require, module, exports) {
+8: [function(require, module, exports) {
 
 /**
  * toString.
@@ -12935,221 +13055,5 @@ function fmt(str){
       : _ + f;
   });
 }
-
-}, {}],
-3: [function(require, module, exports) {
-
-/**
- * Module dependencies.
- */
-
-var Analytics = require('./analytics-node');
-var uid = require('matthewmueller/uid');
-var empty = require('component/empty');
-var each = require('component/each');
-
-/**
- * Analytics.
- */
-
-var analytics = new Analytics('J0KCCfAPH6oXQJ8Np1IwI0HgAGW5oFOX');
-
-var userId = localStorage['userId'];
-
-if (!userId) {
-  userId = uid();
-  localStorage['userId'] = userId;
-}
-
-/**
- * Expose `Recorder`.
- */
-
-module.exports = Recorder;
-
-/**
- * Recorder.
- */
-
-function Recorder () {
-  if (!(this instanceof Recorder)) return new Recorder();
-  this.recording = [];
-  return this;
-}
-
-/**
- * Record a message.
- *
- * @param {String} message
- */
-
-Recorder.prototype.record = function (message) {
-  var lastElement = this.recording[this.recording.length - 1];
-  if (!lastElement) return this.recording.push(message);
-  if (lastElement[1] === message[1]) return;
-  this.recording.push(message);
-};
-
-/**
- * Start recording.
- */
-
-Recorder.prototype.startRecording = function () {
-  analytics.track({
-    userId: userId,
-    event: 'Started recording',
-    background: true
-  });
-  var self = this;
-  self.detect();
-  chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    var message = request;
-    self.record(message);
-  });
-};
-
-/**
- * Detect.
- */
-
-Recorder.prototype.detect = function () {
-  this.detectScreenshots();
-  this.detectUrl();
-  this.detectEvents();
-};
-
-/**
- * Record events on the page.
- */
-
-Recorder.prototype.detectEvents = function () {
-  chrome.tabs.query({currentWindow: true, active: true}, function (tabs){
-    inject('foreground.js', tabs[0].id);
-  });
-  chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-    if (changeInfo.status == 'complete') {
-      chrome.tabs.query({currentWindow: true, active: true}, function (tabs){
-        if (tabId === tabs[0].id) inject('foreground.js', tabs[0].id);
-      });
-    }
-  });
-};
-
-/**
- * Detect the Url.
- *
- */
-
-Recorder.prototype.detectUrl = function () {
-  var self = this;
-  chrome.webNavigation.onCommitted.addListener(function (details) {
-    var type = details.transitionType;
-    var from = details.transitionQualifiers;
-    switch (type) {
-      case 'reload':
-        analytics.track({
-          userId: userId,
-          event: 'Changed Url',
-          type: 'reload',
-          background: true
-        });
-        if (!self.recording.length) return self.record(["goto", details.url]);
-        self.record(['reload']);
-        break;
-      case 'typed':
-        analytics.track({
-          userId: userId,
-          event: 'Changed Url',
-          type: 'type',
-          background: true
-        });
-        if (!from.length) return self.record(["goto", details.url]);
-        if (from[0] === "from_address_bar") return self.record(["goto", details.url]);
-        if (from[0] === "server_redirect" && from[1] === "from_address_bar") return self.record(["goto", details.url]);
-        break;
-      case 'auto_bookmark':
-        analytics.track({
-          userId: userId,
-          event: 'Changed Url',
-          type: 'bookmark',
-          background: true
-        });
-        self.record(["goto", details.url]);
-        break;
-    }
-  });
-};
-
-/**
- * Detect screenshots.
- */
-
-Recorder.prototype.detectScreenshots = function () {
-  var self = this;
-  chrome.commands.onCommand.addListener(function (command) {
-    if (command === "detect-screenshot") {
-      analytics.track({
-        userId: userId,
-        event: 'Took Screenshot',
-        background: true
-      });
-      self.record(['screenshot', 'index.png']);
-    }
-  });
-};
-
-/**
- * Stop recording.
- */
-
-Recorder.prototype.stopRecording = function () {
-  chrome.commands.onCommand.removeListener();
-  chrome.webNavigation.onCommitted.removeListener();
-  chrome.runtime.onMessage.removeListener();
-  chrome.tabs.onUpdated.removeListener();
-};
-
-/**
- * Helper function to inject a content script.
- *
- * @param {String} name
- * @param {Number} id
- */
-
-function inject (name, id) {
-  chrome.tabs.executeScript(id, {file: name});
-};
-
-}, {"./analytics-node":4,"matthewmueller/uid":6,"component/empty":13,"component/each":7}],
-13: [function(require, module, exports) {
-
-var isArray = require('isarray');
-
-function empty(x) {
-  // Arrays
-  if (isArray(x)) {
-    x.length = 0;
-  } 
-
-  // HTML Elements
-  else if (x instanceof HTMLElement) {
-    while (x.firstChild) {
-      x.removeChild(x.firstChild);
-    }
-  }
-
-  // Array-like objects
-  else if ((typeof x.length) == 'number') {
-    Array.prototype.splice.call(x, 0, x.length);
-  }
-}
-
-module.exports = empty;
-
-}, {"isarray":14}],
-14: [function(require, module, exports) {
-module.exports = Array.isArray || function (arr) {
-  return Object.prototype.toString.call(arr) == '[object Array]';
-};
 
 }, {}]}, {}, {"1":""})

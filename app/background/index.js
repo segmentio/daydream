@@ -1,34 +1,8 @@
 
 /**
- * Module dependencies.
+ * Boot Daydream.
  */
 
-var daydream = require('./daydream')();
-var recorder = require('./recorder')();
-
-/**
- * Boot.
- */
-
+var Daydream = require('./daydream');
+var daydream = Daydream();
 daydream.boot();
-
-/**
- * Start.
- */
-
-daydream.on('start', function () {
-  recorder.startRecording();
-  this.setIcon("green");
-});
-
-/**
- * Stop.
- */
-
-daydream.on('stop', function () {
-  recorder.stopRecording();
-  this.setIcon("black");
-  var res = this.parse(recorder.recording);
-  chrome.storage.sync.set({ 'nightmare': res });
-  this.showPopup();
-});

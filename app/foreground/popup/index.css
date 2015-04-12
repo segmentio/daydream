@@ -9,7 +9,10 @@ pre {
   overflow: scroll;
 }
 
-button {
+.Restart-Button {
+  position: relative;
+  left: 120px;
+  top: 190px;
   cursor: pointer;
   border-radius: 50px;
   border-color: #5CCC5C;
@@ -20,24 +23,18 @@ button {
   line-height: 1;
   display: inline-block;
   text-decoration: none;
-  font-family: 'freight-sans-pro SC',Verdana,Geneva,sans-serif;
+  font-family: 'freight-sans-pro SC', Verdana, Geneva, sans-serif;
   background-color: #5CCC5C;
   color: #fff;
   margin: 10px;
 }
 
-button:hover {
+.Restart-Button:hover {
   background-color: #1bf655;
 }
 
-button:focus {
+.Restart-Button:focus {
   outline: none;
-}
-
-#Restart {
-  position: relative;
-  left: 120px;
-  top: 190px;
 }
 
 .Highlight-line::before {
