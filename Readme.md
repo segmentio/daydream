@@ -23,7 +23,7 @@ You can download Daydream from the Chrome Web Store [here](https://chrome.google
 
 Daydream currently supports `.goto()`, `.click()`, `.type()`, `.screenshot()`, and `.refresh()`.
 
-If you want daydream to capture typing, press <kbd>tab</kbd> after you finish typing in each input element.
+If you want daydream to capture typing, press <kbd>tab</kbd> after you finish typing in each `input` element.
 
 ## Analytics
 
