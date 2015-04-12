@@ -5,15 +5,13 @@
 
 ## Example
 
-[![Demo](app/background/images/screenshot.png)](http://cl.ly/0V000I2h1z2b/screenshot.png)
+![Demo](http://f.cl.ly/items/2S3a3P2a1u3r1Z1I1y3f/screenshot.png)
 
-## Usage
-
-### Installing
+## Installing
 
 You can download Daydream from the Chrome Web Store [here](https://chrome.google.com/webstore/detail/daydream/oajnmbophdhdobfpalhkfgahchpcoali).
 
-### Developing
+## Developing
 
 1. Run ```$ git clone https://github.com/segmentio/daydream.git && cd daydream && make```
 2. Navigate to `chrome://extensions`
@@ -22,7 +20,7 @@ You can download Daydream from the Chrome Web Store [here](https://chrome.google
 5. Click `Load unpacked extension...`
 6. Browse to `daydream/build` and press `Select`
 
-### Notes
+## Notes
 
 Daydream currently supports `.goto()`, `.click()`, `.type()`, `.screenshot()`, and `.refresh()`.
 
