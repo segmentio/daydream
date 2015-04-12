@@ -85,40 +85,13 @@
 1: [function(require, module, exports) {
 
 /**
- * Module dependencies.
+ * Boot Daydream.
  */
 
-var daydream = require('./daydream')();
-var recorder = require('./recorder')();
-
-/**
- * Boot.
- */
-
+var Daydream = require('./daydream');
+var daydream = Daydream();
 daydream.boot();
-
-/**
- * Start.
- */
-
-daydream.on('start', function () {
-  recorder.startRecording();
-  this.setIcon("green");
-});
-
-/**
- * Stop.
- */
-
-daydream.on('stop', function () {
-  recorder.stopRecording();
-  this.setIcon("black");
-  var res = this.parse(recorder.recording);
-  chrome.storage.sync.set({ 'nightmare': res });
-  this.showPopup();
-});
-
-}, {"./daydream":2,"./recorder":3}],
+}, {"./daydream":2}],
 2: [function(require, module, exports) {
 
 /**
@@ -128,6 +101,7 @@ daydream.on('stop', function () {
 var Analytics = require('./analytics-node');
 var Emitter = require('component/emitter');
 var uid  = require('matthewmueller/uid');
+var recorder = require('./recorder')();
 var each = require('component/each');
 var os = require('component/os');
 var fmt = require('yields/fmt');
@@ -137,13 +111,9 @@ var fmt = require('yields/fmt');
  */
 
 var analytics = new Analytics('J0KCCfAPH6oXQJ8Np1IwI0HgAGW5oFOX');
-
-var userId = localStorage['userId'];
-
-if (!userId) {
-  userId = uid();
-  localStorage['userId'] = userId;
-}
+var oldId = localStorage['userId'];
+var newId = oldId || uid();
+if (!oldId) localStorage['userId'] = newId;
 
 /**
  * Expose `Daydream`.
@@ -155,52 +125,27 @@ module.exports = Daydream;
  * Daydream.
  */
 
-function Daydream () {
+function Daydream(){
   if (!(this instanceof Daydream)) return new Daydream();
   this.isRunning = false;
-  return this;
 }
-
-/**
- * Mixin.
- */
-
-Emitter(Daydream.prototype);
 
 /**
  * Boot.
  */
 
-Daydream.prototype.boot = function () {
+Daydream.prototype.boot = function(){
   var self = this;
-
-  analytics.identify({
-    userId: userId,
-    version: chrome.app.getDetails().version,
-    languages: window.navigator.languages
-  });
-
-  chrome.browserAction.onClicked.addListener(function () {
+  chrome.browserAction.onClicked.addListener(function(){
     if (!self.isRunning) {
-      self.emit('start');
-
-      analytics.track({
-        userId: userId,
-        event: 'Clicked icon',
-        start: true,
-        stop: false,
-        background: true
-      });
+      recorder.startRecording();
+      self.setIcon("green");
     } else {
-      self.emit('stop');
-      
-      analytics.track({
-        userId: userId,
-        event: 'Clicked icon',
-        start: false,
-        stop: true,
-        background: true
-      });
+      recorder.stopRecording();
+      self.setIcon("black");
+      var res = self.parse(recorder.recording);
+      chrome.storage.sync.set({ 'nightmare': res });
+      self.showPopup();
     }
     self.isRunning = !self.isRunning;
   });
@@ -212,7 +157,7 @@ Daydream.prototype.boot = function () {
  * @param {String} color
  */
 
-Daydream.prototype.setIcon = function (color) {
+Daydream.prototype.setIcon = function(color){
   if (color === "green") return chrome.browserAction.setIcon({path: 'images/icon-green.png'});
   if (color === "black") return chrome.browserAction.setIcon({path: 'images/icon-black.png'});
 };
@@ -221,12 +166,7 @@ Daydream.prototype.setIcon = function (color) {
  * Show the popup.
  */
 
-Daydream.prototype.showPopup = function () {
-  analytics.track({
-    userId: userId,
-    event: 'Displayed Popup',
-    background: true
-  });
+Daydream.prototype.showPopup = function(){
   chrome.browserAction.setPopup({popup: 'index.html'});
   chrome.browserAction.setBadgeText({text: '1'});
 };
@@ -237,7 +177,7 @@ Daydream.prototype.showPopup = function () {
  * @param {Array} recording
  */
 
-Daydream.prototype.parse = function (recording) {
+Daydream.prototype.parse = function(recording){
   var newLine = '\n';
   if (os == 'windows') newLine = '\r\n';
 
@@ -288,8 +228,8 @@ Daydream.prototype.parse = function (recording) {
   return result;
 };
 
-}, {"./analytics-node":4,"component/emitter":5,"matthewmueller/uid":6,"component/each":7,"component/os":8,"yields/fmt":9}],
-4: [function(require, module, exports) {
+}, {"./analytics-node":3,"component/emitter":4,"matthewmueller/uid":5,"./recorder":6,"component/each":7,"component/os":8,"yields/fmt":9}],
+3: [function(require, module, exports) {
 ! function(e) {
     if ("object" == typeof exports && "undefined" != typeof module) module.exports = e();
     else if ("function" == typeof define && define.amd) define([], e);
@@ -12325,7 +12265,7 @@ Daydream.prototype.parse = function (recording) {
     }, {}, [1])(1)
 });
 }, {}],
-5: [function(require, module, exports) {
+4: [function(require, module, exports) {
 
 /**
  * Expose `Emitter`.
@@ -12489,7 +12429,7 @@ Emitter.prototype.hasListeners = function(event){
 };
 
 }, {}],
-6: [function(require, module, exports) {
+5: [function(require, module, exports) {
 /**
  * Export `uid`
  */
@@ -12507,6 +12447,184 @@ function uid(len) {
   len = len || 7;
   return Math.random().toString(35).substr(2, len);
 }
+
+}, {}],
+6: [function(require, module, exports) {
+
+/**
+ * Module dependencies.
+ */
+
+var Analytics = require('./analytics-node');
+var uid = require('matthewmueller/uid');
+var empty = require('component/empty');
+var each = require('component/each');
+
+/**
+ * Analytics.
+ */
+
+var analytics = new Analytics('J0KCCfAPH6oXQJ8Np1IwI0HgAGW5oFOX');
+var oldId = localStorage['userId'];
+var newId = oldId || uid();
+if (!oldId) localStorage['userId'] = newId;
+
+/**
+ * Expose `Recorder`.
+ */
+
+module.exports = Recorder;
+
+/**
+ * Recorder.
+ */
+
+function Recorder(){
+  if (!(this instanceof Recorder)) return new Recorder();
+  this.recording = [];
+}
+
+/**
+ * Record a message.
+ *
+ * @param {String} message
+ */
+
+Recorder.prototype.record = function(message){
+  var lastElement = this.recording[this.recording.length - 1];
+  if (!lastElement) return this.recording.push(message);
+  if (lastElement[1] === message[1]) return;
+  this.recording.push(message);
+};
+
+/**
+ * Start recording.
+ */
+
+Recorder.prototype.startRecording = function(){
+  var self = this;
+
+  this.detectScreenshots();
+  this.detectUrl();
+  this.detectEvents();
+
+  chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    var message = request;
+    self.record(message);
+  });
+};
+
+/**
+ * Record events on the page.
+ */
+
+Recorder.prototype.detectEvents = function(){
+  chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
+    inject('foreground.js', tabs[0].id);
+  });
+
+  chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
+    if (changeInfo.status == 'complete') {
+      chrome.tabs.query({currentWindow: true, active: true}, function (tabs){
+        if (tabId === tabs[0].id) inject('foreground.js', tabs[0].id);
+      });
+    }
+  });
+};
+
+/**
+ * Detect the url.
+ */
+
+Recorder.prototype.detectUrl = function(){
+  var self = this;
+  
+  chrome.webNavigation.onCommitted.addListener(function(details){
+    var type = details.transitionType;
+    var from = details.transitionQualifiers;
+    
+    switch (type) {
+      case 'reload':
+        if (!self.recording.length) return self.record(["goto", details.url]);
+        self.record(['reload']);
+        break;
+      case 'typed':
+        if (!from.length) return self.record(["goto", details.url]);
+        if (from[0] === "from_address_bar") return self.record(["goto", details.url]);
+        if (from[0] === "server_redirect" && from[1] === "from_address_bar") return self.record(["goto", details.url]);
+        break;
+      case 'auto_bookmark':
+        self.record(["goto", details.url]);
+        break;
+    }
+  });
+};
+
+/**
+ * Detect screenshots.
+ */
+
+Recorder.prototype.detectScreenshots = function(){
+  var self = this;
+  
+  chrome.commands.onCommand.addListener(function(command){
+    if (command === "detect-screenshot") self.record(['screenshot', 'index.png']);
+  });
+};
+
+/**
+ * Stop recording.
+ */
+
+Recorder.prototype.stopRecording = function(){
+  chrome.commands.onCommand.removeListener();
+  chrome.webNavigation.onCommitted.removeListener();
+  chrome.runtime.onMessage.removeListener();
+  chrome.tabs.onUpdated.removeListener();
+};
+
+/**
+ * Helper function to inject a content script.
+ *
+ * @param {String} name
+ * @param {Number} id
+ */
+
+function inject(name, id){
+  chrome.tabs.executeScript(id, {file: name});
+};
+
+}, {"./analytics-node":3,"matthewmueller/uid":5,"component/empty":10,"component/each":7}],
+10: [function(require, module, exports) {
+
+var isArray = require('isarray');
+
+function empty(x) {
+  // Arrays
+  if (isArray(x)) {
+    x.length = 0;
+  } 
+
+  // HTML Elements
+  else if (x instanceof HTMLElement) {
+    while (x.firstChild) {
+      x.removeChild(x.firstChild);
+    }
+  }
+
+  // Array-like objects
+  else if ((typeof x.length) == 'number') {
+    Array.prototype.splice.call(x, 0, x.length);
+  }
+}
+
+module.exports = empty;
+
+}, {"isarray":11}],
+11: [function(require, module, exports) {
+module.exports = Array.isArray || function (arr) {
+  return Object.prototype.toString.call(arr) == '[object Array]';
+};
 
 }, {}],
 7: [function(require, module, exports) {
@@ -12600,8 +12718,8 @@ function array(obj, fn, ctx) {
   }
 }
 
-}, {"type":10,"component-type":10,"to-function":11}],
-10: [function(require, module, exports) {
+}, {"type":12,"component-type":12,"to-function":13}],
+12: [function(require, module, exports) {
 
 /**
  * toString ref.
@@ -12636,7 +12754,7 @@ module.exports = function(val){
 };
 
 }, {}],
-11: [function(require, module, exports) {
+13: [function(require, module, exports) {
 
 /**
  * Module Dependencies
@@ -12790,8 +12908,8 @@ function stripNested (prop, str, val) {
   });
 }
 
-}, {"props":12,"component-props":12}],
-12: [function(require, module, exports) {
+}, {"props":14,"component-props":14}],
+14: [function(require, module, exports) {
 /**
  * Global Names
  */
@@ -12935,221 +13053,5 @@ function fmt(str){
       : _ + f;
   });
 }
-
-}, {}],
-3: [function(require, module, exports) {
-
-/**
- * Module dependencies.
- */
-
-var Analytics = require('./analytics-node');
-var uid = require('matthewmueller/uid');
-var empty = require('component/empty');
-var each = require('component/each');
-
-/**
- * Analytics.
- */
-
-var analytics = new Analytics('J0KCCfAPH6oXQJ8Np1IwI0HgAGW5oFOX');
-
-var userId = localStorage['userId'];
-
-if (!userId) {
-  userId = uid();
-  localStorage['userId'] = userId;
-}
-
-/**
- * Expose `Recorder`.
- */
-
-module.exports = Recorder;
-
-/**
- * Recorder.
- */
-
-function Recorder () {
-  if (!(this instanceof Recorder)) return new Recorder();
-  this.recording = [];
-  return this;
-}
-
-/**
- * Record a message.
- *
- * @param {String} message
- */
-
-Recorder.prototype.record = function (message) {
-  var lastElement = this.recording[this.recording.length - 1];
-  if (!lastElement) return this.recording.push(message);
-  if (lastElement[1] === message[1]) return;
-  this.recording.push(message);
-};
-
-/**
- * Start recording.
- */
-
-Recorder.prototype.startRecording = function () {
-  analytics.track({
-    userId: userId,
-    event: 'Started recording',
-    background: true
-  });
-  var self = this;
-  self.detect();
-  chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    var message = request;
-    self.record(message);
-  });
-};
-
-/**
- * Detect.
- */
-
-Recorder.prototype.detect = function () {
-  this.detectScreenshots();
-  this.detectUrl();
-  this.detectEvents();
-};
-
-/**
- * Record events on the page.
- */
-
-Recorder.prototype.detectEvents = function () {
-  chrome.tabs.query({currentWindow: true, active: true}, function (tabs){
-    inject('foreground.js', tabs[0].id);
-  });
-  chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-    if (changeInfo.status == 'complete') {
-      chrome.tabs.query({currentWindow: true, active: true}, function (tabs){
-        if (tabId === tabs[0].id) inject('foreground.js', tabs[0].id);
-      });
-    }
-  });
-};
-
-/**
- * Detect the Url.
- *
- */
-
-Recorder.prototype.detectUrl = function () {
-  var self = this;
-  chrome.webNavigation.onCommitted.addListener(function (details) {
-    var type = details.transitionType;
-    var from = details.transitionQualifiers;
-    switch (type) {
-      case 'reload':
-        analytics.track({
-          userId: userId,
-          event: 'Changed Url',
-          type: 'reload',
-          background: true
-        });
-        if (!self.recording.length) return self.record(["goto", details.url]);
-        self.record(['reload']);
-        break;
-      case 'typed':
-        analytics.track({
-          userId: userId,
-          event: 'Changed Url',
-          type: 'type',
-          background: true
-        });
-        if (!from.length) return self.record(["goto", details.url]);
-        if (from[0] === "from_address_bar") return self.record(["goto", details.url]);
-        if (from[0] === "server_redirect" && from[1] === "from_address_bar") return self.record(["goto", details.url]);
-        break;
-      case 'auto_bookmark':
-        analytics.track({
-          userId: userId,
-          event: 'Changed Url',
-          type: 'bookmark',
-          background: true
-        });
-        self.record(["goto", details.url]);
-        break;
-    }
-  });
-};
-
-/**
- * Detect screenshots.
- */
-
-Recorder.prototype.detectScreenshots = function () {
-  var self = this;
-  chrome.commands.onCommand.addListener(function (command) {
-    if (command === "detect-screenshot") {
-      analytics.track({
-        userId: userId,
-        event: 'Took Screenshot',
-        background: true
-      });
-      self.record(['screenshot', 'index.png']);
-    }
-  });
-};
-
-/**
- * Stop recording.
- */
-
-Recorder.prototype.stopRecording = function () {
-  chrome.commands.onCommand.removeListener();
-  chrome.webNavigation.onCommitted.removeListener();
-  chrome.runtime.onMessage.removeListener();
-  chrome.tabs.onUpdated.removeListener();
-};
-
-/**
- * Helper function to inject a content script.
- *
- * @param {String} name
- * @param {Number} id
- */
-
-function inject (name, id) {
-  chrome.tabs.executeScript(id, {file: name});
-};
-
-}, {"./analytics-node":4,"matthewmueller/uid":6,"component/empty":13,"component/each":7}],
-13: [function(require, module, exports) {
-
-var isArray = require('isarray');
-
-function empty(x) {
-  // Arrays
-  if (isArray(x)) {
-    x.length = 0;
-  } 
-
-  // HTML Elements
-  else if (x instanceof HTMLElement) {
-    while (x.firstChild) {
-      x.removeChild(x.firstChild);
-    }
-  }
-
-  // Array-like objects
-  else if ((typeof x.length) == 'number') {
-    Array.prototype.splice.call(x, 0, x.length);
-  }
-}
-
-module.exports = empty;
-
-}, {"isarray":14}],
-14: [function(require, module, exports) {
-module.exports = Array.isArray || function (arr) {
-  return Object.prototype.toString.call(arr) == '[object Array]';
-};
 
 }, {}]}, {}, {"1":""})
