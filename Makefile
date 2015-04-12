@@ -1,25 +1,15 @@
 
-#
-# Binaries.
-#
-
 BIN = node_modules/.bin
 DUO = $(BIN)/duo
-
-#
-# Wildcards.
-#
 
 BG := $(shell find app/background/index.js)
 FG := $(shell find app/foreground/index.js)
 
-#
-# Targets.
-#
-
 default: build
 
-build: folders
+build: node_modules
+	@mkdir -p build
+	@mkdir -p build/images
 	@cp app/manifest.json build/manifest.json
 	@cp app/background/images/icon-black.png build/images/icon-black.png
 	@cp app/background/images/icon-green.png build/images/icon-green.png
@@ -29,23 +19,13 @@ build: folders
 	@$(DUO) $(BG) > build/background.js
 	@$(DUO) $(FG) > build/foreground.js
 
-folders: node_modules
-	@mkdir -p build
-	@mkdir -p build/images
-
 node_modules: package.json
 	@npm install
 
-#
-# Clean.
-#
-
 clean:
-	@rm -rf build components node_modules
-	@npm cache clean
-
-#
-# Phonies.
-#
+	@rm -rf build
+	
+distclean:
+	@rm -rf components node_modules
 
 .PHONY: clean
