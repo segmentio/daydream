@@ -88,78 +88,26 @@
  * Module dependencies.
  */
 
-var popup = require('./popup')();
+var js = require('segmentio/highlight-javascript');
+var Highlight = require('segmentio/highlight');
+var Emitter = require('component/emitter');
 
-/**
- * Boot.
- */
+var el = document.querySelector('pre');
+chrome.storage.sync.get('nightmare', function(res){
+  var highlight = Highlight().use(js);
+  el.innerText = res.nightmare;
+  highlight.element(el);
+});
 
-popup.boot();
-
-/**
- * Restart.
- */
-
-popup.on('restart', function () {
+var restart = document.querySelector('.Restart-Button');
+restart.addEventListener('click', function(event) {
   chrome.browserAction.setBadgeText({text: ''});
   chrome.runtime.reload();
   window.close();
 });
 
-}, {"./popup":2}],
+}, {"segmentio/highlight-javascript":2,"segmentio/highlight":3,"component/emitter":4}],
 2: [function(require, module, exports) {
-
-/**
- * Module dependencies.
- */
-
-var js = require('segmentio/highlight-javascript');
-var Highlight = require('segmentio/highlight');
-var Emitter = require('component/emitter');
-
-/**
- * Expose `Popup`.
- */
-
-module.exports = Popup;
-
-/**
- * Popup.
- */
-
-function Popup () {
-  if (!(this instanceof Popup)) return new Popup();
-  return this;
-}
-
-/**
- * Mixin.
- */
-
-Emitter(Popup.prototype);
-
-/**
- * Boot.
- */
-
-Popup.prototype.boot = function () {
-  var self = this;
-  var highlight = Highlight().use(js);
-
-  var el = document.getElementsByTagName('pre')[0];
-  chrome.storage.sync.get('nightmare', function(res){
-    el.innerText = res.nightmare;
-    highlight.element(el);
-  });
-
-  var restart = document.getElementById('Restart');
-  restart.addEventListener('click', function(event) {
-    self.emit('restart');
-  });
-};
-
-}, {"segmentio/highlight-javascript":3,"segmentio/highlight":4,"component/emitter":5}],
-3: [function(require, module, exports) {
 
 /**
  * Expose `plugin`.
@@ -248,7 +196,7 @@ grammar.operator = /([-+]{1,2}|!|&lt;=?|>=?|={1,3}|&lt;{1,2}|>{1,2}|(&amp;){1,2}
 
 grammar.punctuation = /[{}[\];(),.:]/;
 }, {}],
-4: [function(require, module, exports) {
+3: [function(require, module, exports) {
 
 var escape = require('escape-html');
 
@@ -445,8 +393,8 @@ function lang(el){
   if (m = matcher.exec(el.className)) return m[1];
   return language(el.parentNode);
 }
-}, {"escape-html":6}],
-6: [function(require, module, exports) {
+}, {"escape-html":5}],
+5: [function(require, module, exports) {
 /**
  * Escape special characters in the given string of html.
  *
@@ -465,7 +413,7 @@ module.exports = function(html) {
 }
 
 }, {}],
-5: [function(require, module, exports) {
+4: [function(require, module, exports) {
 
 /**
  * Expose `Emitter`.
