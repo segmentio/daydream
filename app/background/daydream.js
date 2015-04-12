@@ -6,6 +6,7 @@
 var Analytics = require('./analytics-node');
 var Emitter = require('component/emitter');
 var uid  = require('matthewmueller/uid');
+var recorder = require('./recorder')();
 var each = require('component/each');
 var os = require('component/os');
 var fmt = require('yields/fmt');
@@ -15,13 +16,9 @@ var fmt = require('yields/fmt');
  */
 
 var analytics = new Analytics('J0KCCfAPH6oXQJ8Np1IwI0HgAGW5oFOX');
-
-var userId = localStorage['userId'];
-
-if (!userId) {
-  userId = uid();
-  localStorage['userId'] = userId;
-}
+var oldId = localStorage['userId'];
+var newId = oldId || uid();
+if (!oldId) localStorage['userId'] = newId;
 
 /**
  * Expose `Daydream`.
@@ -33,52 +30,27 @@ module.exports = Daydream;
  * Daydream.
  */
 
-function Daydream () {
+function Daydream(){
   if (!(this instanceof Daydream)) return new Daydream();
   this.isRunning = false;
-  return this;
 }
-
-/**
- * Mixin.
- */
-
-Emitter(Daydream.prototype);
 
 /**
  * Boot.
  */
 
-Daydream.prototype.boot = function () {
+Daydream.prototype.boot = function(){
   var self = this;
-
-  analytics.identify({
-    userId: userId,
-    version: chrome.app.getDetails().version,
-    languages: window.navigator.languages
-  });
-
-  chrome.browserAction.onClicked.addListener(function () {
+  chrome.browserAction.onClicked.addListener(function(){
     if (!self.isRunning) {
-      self.emit('start');
-
-      analytics.track({
-        userId: userId,
-        event: 'Clicked icon',
-        start: true,
-        stop: false,
-        background: true
-      });
+      recorder.startRecording();
+      self.setIcon("green");
     } else {
-      self.emit('stop');
-      
-      analytics.track({
-        userId: userId,
-        event: 'Clicked icon',
-        start: false,
-        stop: true,
-        background: true
-      });
+      recorder.stopRecording();
+      self.setIcon("black");
+      var res = self.parse(recorder.recording);
+      chrome.storage.sync.set({ 'nightmare': res });
+      self.showPopup();
     }
     self.isRunning = !self.isRunning;
   });
@@ -90,7 +62,7 @@ Daydream.prototype.boot = function () {
  * @param {String} color
  */
 
-Daydream.prototype.setIcon = function (color) {
+Daydream.prototype.setIcon = function(color){
   if (color === "green") return chrome.browserAction.setIcon({path: 'images/icon-green.png'});
   if (color === "black") return chrome.browserAction.setIcon({path: 'images/icon-black.png'});
 };
@@ -99,12 +71,7 @@ Daydream.prototype.setIcon = function (color) {
  * Show the popup.
  */
 
-Daydream.prototype.showPopup = function () {
-  analytics.track({
-    userId: userId,
-    event: 'Displayed Popup',
-    background: true
-  });
+Daydream.prototype.showPopup = function(){
   chrome.browserAction.setPopup({popup: 'index.html'});
   chrome.browserAction.setBadgeText({text: '1'});
 };
@@ -115,7 +82,7 @@ Daydream.prototype.showPopup = function () {
  * @param {Array} recording
  */
 
-Daydream.prototype.parse = function (recording) {
+Daydream.prototype.parse = function(recording){
   var newLine = '\n';
   if (os == 'windows') newLine = '\r\n';
 
