@@ -17,7 +17,7 @@ You can download Daydream from the Chrome Web Store [here](https://chrome.google
 2. Navigate to `chrome://extensions`
 3. Ensure that 'Developer mode' is checked
 4. Click `Load unpacked extension...`
-5. Browse to `daydream/build` and press `Select`
+5. Browse to `daydream/build` and click `Select`
 
 ## Notes
 
