@@ -19,6 +19,10 @@ You can download Daydream from the Chrome Web Store [here](https://chrome.google
 4. Click `Load unpacked extension...`
 5. Browse to `daydream/build` and click `Select`
 
+## Usage
+
+Just click the black daydream icon (it should turn green to indicate that it is actively recording), run all the tasks you wish to automate, and then click the green icon and open the popup. 
+
 ## Notes
 
 Daydream currently supports `.goto()`, `.click()`, `.type()`, `.screenshot()`, and `.refresh()`.
@@ -27,7 +31,7 @@ If you want daydream to capture typing, press <kbd>tab</kbd> after you finish ty
 
 ## Analytics
 
-You can easily add analytics-node to your own chrome extension:
+Daydream uses the [analytics-node](https://github.com/segmentio/analytics-node) library for analytics tracking. Here's an example of how you can add analytics to your own chrome extension:
 
 ```js
 var Analytics = require('analytics-node');
