@@ -6,7 +6,42 @@ body {
 
 pre {
   font-size: 13px;
-  overflow: scroll;
+  overflow: auto;
+}
+
+a {
+  font-size: 15px;
+  cursor: pointer;
+  color: blue;
+}
+
+.Lib-Nightmare,
+.Lib-Horseman {
+  cursor: pointer;
+  border-radius: 50px;
+  border-color: #5CCC5C;
+  border-style: none;
+  padding: 3px 15px 5px;
+  text-transform: lowercase;
+  font-size: 16px;
+  line-height: 1;
+  display: inline-block;
+  text-decoration: none;
+  font-family: 'freight-sans-pro SC', Verdana, Geneva, sans-serif;
+  background-color: #5CCC5C;
+  color: #fff;
+  margin: 10px;
+}
+
+.Lib-Nightmare:hover,
+.Lib-Horseman:hover {
+  background-color: #1bf655;
+}
+
+
+.Lib-Nightmare:focus,
+.Lib-Horseman:focus {
+  outline: none;
 }
 
 .Restart-Button {
