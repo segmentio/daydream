@@ -1,6 +1,6 @@
 {
   "name": "Daydream",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "manifest_version": 2,
   "description": "A chrome extension to record your actions into a nightmare script.",
   "permissions": [
