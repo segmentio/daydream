@@ -8,8 +8,13 @@
 ![Demo](http://f.cl.ly/items/2S3a3P2a1u3r1Z1I1y3f/screenshot.png)
 
 ## Installing
+### Google Chrome
 
 You can download Daydream from the Chrome Web Store [here](https://chrome.google.com/webstore/detail/daydream/oajnmbophdhdobfpalhkfgahchpcoali).
+
+### Opera
+
+First enable Opera to install Chrome extensions [here](https://addons.opera.com/extensions/details/download-chrome-extension-9/); then you can download Daydream from the Chrome Web Store [here](https://chrome.google.com/webstore/detail/daydream/oajnmbophdhdobfpalhkfgahchpcoali).
 
 ## Developing
 
