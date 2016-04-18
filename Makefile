@@ -24,7 +24,7 @@ node_modules: package.json
 
 clean:
 	@rm -rf build
-	
+
 distclean:
 	@rm -rf components node_modules
 
