@@ -1,5 +1,5 @@
 {
-  "name": "Daydream",
+  "name": "Phobetor",
   "version": "2.1.1",
   "manifest_version": 2,
   "description": "A chrome extension to record your actions into a nightmare script.",
@@ -12,7 +12,7 @@
   "content_security_policy": "script-src 'self' https://*.segment.com https://*.mxpnl.com; object-src 'self'",
   "browser_action": {
     "default_icon": "images/icon-black.png",
-    "default_title": "Daydream"
+    "default_title": "Phobetor"
   },
   "background": {
     "scripts": ["background.js"],
