@@ -15,8 +15,7 @@ a {
   color: blue;
 }
 
-.Lib-Nightmare,
-.Lib-Horseman {
+.Lib-Nightmare{
   cursor: pointer;
   border-radius: 50px;
   border-color: #5CCC5C;
@@ -33,14 +32,12 @@ a {
   margin: 10px;
 }
 
-.Lib-Nightmare:hover,
-.Lib-Horseman:hover {
+.Lib-Nightmare:hover{
   background-color: #1bf655;
 }
 
 
-.Lib-Nightmare:focus,
-.Lib-Horseman:focus {
+.Lib-Nightmare:focus{
   outline: none;
 }
 
