@@ -31,12 +31,13 @@ Daydream.prototype.boot = function () {
 }
 
 Daydream.prototype.parse = function (recording) {
-  var newLine = '\n'
+  let newLine = '\n'
   if (os === 'windows') newLine = '\r\n'
 
-  var result = [
-    "const Nightmare = require('nightmare');",
-    `  yield Nightmare()${newLine}`
+  let result = [
+    'const Nightmare = require(\'nightmare\')',
+    `const nightmare = Nightmare({ show: true })${newLine}`,
+    `nightmare${newLine}`
   ].join(newLine)
 
   each(recording, function (record, i) {
@@ -44,37 +45,47 @@ Daydream.prototype.parse = function (recording) {
     var content = record[1]
     switch (type) {
       case 'goto':
-        result += `    .goto('${content}')${newLine}`
+        result += `  .goto('${content}')${newLine}`
         break
       case 'click':
-        result += `    .click('${content}')${newLine}`
+        result += `  .click('${content}')${newLine}`
         break
       case 'type':
-        var val = record[2]
-        result += `    .type('${content}', '${val}')${newLine}`
+        const val = record[2]
+        result += `  .type('${content}', '${val}')${newLine}`
         break
       case 'screenshot':
-        result += `    .screenshot('${content}')${newLine}`
+        result += `  .screenshot('${content}')${newLine}`
         break
       case 'reload':
-        result += `    .refresh()${newLine}`
+        result += `  .refresh()${newLine}`
         break
       case 'evaluate':
-        var textEl = `      return document.querySelector('${content}').innerText;`
+        var textEl = `    return document.querySelector('${content}').innerText`
 
         result += [
           '    .evaluate(function () {',
           textEl,
           '    }, function (text) {',
-          '      console.log(text);',
+          '      console.log(text)',
           `    })${newLine}`
         ].join(newLine)
 
         break
       default:
-        console.log('Not a valid nightmare/horseman command')
+        console.log('Not a valid nightmare command')
     }
   })
+
+  result +=
+
+  `  .end()
+  .then(function (result) {
+    console.log(result)
+  })
+  .catch(function (error) {
+    console.error('Error:', error);
+  });`
 
   return result
 }

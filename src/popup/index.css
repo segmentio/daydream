@@ -1,6 +1,6 @@
 body {
-  width: 330px;
-  height: 230px;
+  width: 350px;
+  height: 350px;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -20,7 +20,7 @@ a {
   left: 120px;
   top: 190px;
   cursor: pointer;
-  border-radius: 50px;
+  border-radius: 5px;
   border-color: #49B882;
   border-style: none;
   padding: 3px 15px 5px;
