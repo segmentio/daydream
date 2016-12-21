@@ -1,7 +1,7 @@
 body {
   width: 330px;
   height: 230px;
-  background-color: f8f5f0;
+  -webkit-font-smoothing: antialiased;
 }
 
 pre {
@@ -21,7 +21,7 @@ a {
   top: 190px;
   cursor: pointer;
   border-radius: 50px;
-  border-color: #5CCC5C;
+  border-color: #49B882;
   border-style: none;
   padding: 3px 15px 5px;
   text-transform: lowercase;
@@ -29,14 +29,13 @@ a {
   line-height: 1;
   display: inline-block;
   text-decoration: none;
-  font-family: 'freight-sans-pro SC', Verdana, Geneva, sans-serif;
-  background-color: #5CCC5C;
+  background-color: #49B882;
   color: #fff;
   margin: 10px;
 }
 
 .Button:hover {
-  background-color: #1bf655;
+  background-color: #49B882;
 }
 
 .Button:focus {
@@ -66,7 +65,7 @@ a {
 
 .Highlight-function,
 .Highlight-method {
-  color: #50B350;
+  color: #49B882;
 }
 
 .Highlight-boolean,
