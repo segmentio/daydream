@@ -1,0 +1,14 @@
+machine:
+  node:
+    version: 6
+
+dependencies:
+  cache_directories:
+    - 'node_modules'
+
+deployment:
+  branch: master
+  commands:
+    - make clean
+    - NODE_ENV=production make build
+    - // TODO: Automate publishing to Chrome Web Store

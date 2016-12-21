@@ -15,36 +15,7 @@ a {
   color: blue;
 }
 
-.Lib-Nightmare,
-.Lib-Horseman {
-  cursor: pointer;
-  border-radius: 50px;
-  border-color: #5CCC5C;
-  border-style: none;
-  padding: 3px 15px 5px;
-  text-transform: lowercase;
-  font-size: 16px;
-  line-height: 1;
-  display: inline-block;
-  text-decoration: none;
-  font-family: 'freight-sans-pro SC', Verdana, Geneva, sans-serif;
-  background-color: #5CCC5C;
-  color: #fff;
-  margin: 10px;
-}
-
-.Lib-Nightmare:hover,
-.Lib-Horseman:hover {
-  background-color: #1bf655;
-}
-
-
-.Lib-Nightmare:focus,
-.Lib-Horseman:focus {
-  outline: none;
-}
-
-.Restart-Button {
+.Button {
   position: relative;
   left: 120px;
   top: 190px;
@@ -64,11 +35,11 @@ a {
   margin: 10px;
 }
 
-.Restart-Button:hover {
+.Button:hover {
   background-color: #1bf655;
 }
 
-.Restart-Button:focus {
+.Button:focus {
   outline: none;
 }
 
@@ -79,10 +50,6 @@ a {
   left: 22px;
   opacity: 0.5;
 }
-
-/**
-* Code highlighting.
-*/
 
 .Highlight-keyword {
   font-weight: bold;
