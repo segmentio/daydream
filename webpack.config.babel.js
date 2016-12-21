@@ -5,7 +5,7 @@ import cssnext from 'postcss-cssnext'
 import path from 'path'
 
 const base = {
-  context: path.join(__dirname, 'lib'),
+  context: path.join(__dirname, 'src'),
   entry: {
     background: './background/index.js',
     'content-script': './content-scripts/index.js',
