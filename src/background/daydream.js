@@ -35,7 +35,7 @@ Daydream.prototype.parse = function (recording) {
   if (os === 'windows') newLine = '\r\n'
 
   var result = [
-    "var Nightmare = require('nightmare');",
+    "const Nightmare = require('nightmare');",
     `  yield Nightmare()${newLine}`
   ].join(newLine)
 
