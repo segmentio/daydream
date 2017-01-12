@@ -45,8 +45,8 @@ class Daydream {
     ].join(newLine)
 
     each(recording, function (record, i) {
-      var type = record[0]
-      var content = record[1]
+      const type = record[0]
+      const content = record[1]
       switch (type) {
         case 'goto':
           result += `  .goto('${content}')${newLine}`
@@ -65,7 +65,7 @@ class Daydream {
           result += `  .refresh()${newLine}`
           break
         case 'evaluate':
-          var textEl = `    return document.querySelector('${content}').innerText`
+          const textEl = `    return document.querySelector('${content}').innerText`
 
           result += [
             '    .evaluate(function () {',
