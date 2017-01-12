@@ -1,3 +1,3 @@
 import Daydream from './daydream'
-const daydream = Daydream()
+const daydream = new Daydream()
 daydream.boot()
