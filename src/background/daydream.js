@@ -17,20 +17,29 @@ class Daydream {
   }
 
   boot () {
-    const self = this
-    chrome.browserAction.onClicked.addListener(function (tab) {
-      if (!self.isRunning) {
-        self.recorder.startRecording()
-        chrome.browserAction.setIcon({ path: 'images/icon-green.png', tabId: tab.id })
-      } else {
-        self.recorder.stopRecording()
-        chrome.browserAction.setIcon({ path: 'images/icon-black.png', tabId: tab.id })
-        const nightmare = self.parse(self.recorder.recording)
-        chrome.storage.sync.set({ 'nightmare': nightmare })
-        chrome.browserAction.setPopup({ popup: 'popup.html' })
-        chrome.browserAction.setBadgeText({ text: '1' })
-      }
-      self.isRunning = !self.isRunning
+    chrome.browserAction.onClicked.addListener(tab => {
+      chrome.tabs.query({ currentWindow: true, active: true }, tabs => {
+        if (!this.isRunning) {
+          this.recorder.startRecording()
+          chrome.browserAction.setIcon({ path: 'images/icon-green.png', tabId: tab.id })
+        } else {
+          this.recorder.stopRecording()
+          chrome.browserAction.setIcon({ path: 'images/icon-black.png', tabId: tab.id })
+          const nightmare = this.parse(this.recorder.recording)
+          chrome.storage.sync.set({ 'nightmare': nightmare })
+          chrome.browserAction.setPopup({ popup: 'popup.html' })
+          chrome.browserAction.setBadgeText({ text: '1' })
+        }
+        this.isRunning = !this.isRunning
+      })
+    })
+
+    chrome.webNavigation.onCommitted.addListener(details => {
+      chrome.tabs.query({ currentWindow: true, active: true }, tabs => {
+        if (this.isRunning) {
+          chrome.browserAction.setIcon({ path: 'images/icon-green.png', tabId: tabs[0].id })
+        }
+      })
     })
   }
 
