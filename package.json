@@ -31,7 +31,7 @@
     "analytics-node": "^2.1.0",
     "component-each": "^0.2.6",
     "component-os": "0.0.1",
-    "css-path": "^1.0.3",
+    "css-selector-generator": "^1.0.2",
     "highlight-javascript": "0.0.3",
     "syntax-highlighter": "0.0.3",
     "uid": "0.0.2"
