@@ -1317,32 +1317,13 @@ commoner@~0.10.3:
     q "^1.1.2"
     recast "^0.11.17"
 
-component-each@^0.2.6:
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/component-each/-/component-each-0.2.6.tgz#991faf31ef4fcafbad04237124d381b3394941d5"
-  dependencies:
-    component-type "1.0.0"
-    to-function "2.0.6"
-
 component-emitter@^1.2.0:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/component-emitter/-/component-emitter-1.2.1.tgz#137918d6d78283f7df7a6b7c5a63e140e69425e6"
 
-component-os@0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/component-os/-/component-os-0.0.1.tgz#959343be0d6843bb77712fe278f5ff7b5123296b"
-
-component-props@*:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/component-props/-/component-props-1.1.1.tgz#f9b7df9b9927b6e6d97c9bd272aa867670f34944"
-
 component-type@~1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/component-type/-/component-type-1.2.1.tgz#8a47901700238e4fc32269771230226f24b415a9"
-
-component-type@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/component-type/-/component-type-1.0.0.tgz#1ed8812e32dd65099d433570757f111ea3d3d871"
 
 concat-map@0.0.1:
   version "0.0.1"
@@ -2388,6 +2369,14 @@ highlight-javascript@0.0.3:
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/highlight-javascript/-/highlight-javascript-0.0.3.tgz#25350956c5c0b6ab817ed26938efc0f9f93ddbcf"
 
+highlight.js@~9.8.0:
+  version "9.8.0"
+  resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-9.8.0.tgz#38eeef40cd45eaddbec8c9e5238fb7a783a3b685"
+
+highlight.js@~9.9.0:
+  version "9.9.0"
+  resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-9.9.0.tgz#b9995dcfdc2773e307a34f0460d92b9a474782c0"
+
 hmac-drbg@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/hmac-drbg/-/hmac-drbg-1.0.0.tgz#3db471f45aae4a994a0688322171f51b8b91bee5"
@@ -2941,6 +2930,12 @@ loose-envify@^1.0.0, loose-envify@^1.1.0:
 lower-case@^1.1.1:
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/lower-case/-/lower-case-1.1.4.tgz#9a2cabd1b9e8e0ae993a4bf7d5875c39c42e8eac"
+
+lowlight@^1.5.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/lowlight/-/lowlight-1.6.0.tgz#92f61e31e09ae9e971e70cabdd9e8f219f025232"
+  dependencies:
+    highlight.js "~9.9.0"
 
 lru-cache@~2.6.5:
   version "2.6.5"
@@ -4008,6 +4003,14 @@ react-redux@^5.0.3:
     lodash-es "^4.2.0"
     loose-envify "^1.1.0"
 
+react-syntax-highlighter@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/react-syntax-highlighter/-/react-syntax-highlighter-5.0.0.tgz#571c3418cc87b6e46839def297df74051b778571"
+  dependencies:
+    babel-runtime "^6.18.0"
+    highlight.js "~9.8.0"
+    lowlight "^1.5.0"
+
 react@^15.4.2:
   version "15.4.2"
   resolved "https://registry.yarnpkg.com/react/-/react-15.4.2.tgz#41f7991b26185392ba9bae96c8889e7e018397ef"
@@ -4743,12 +4746,6 @@ to-arraybuffer@^1.0.0:
 to-fast-properties@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/to-fast-properties/-/to-fast-properties-1.0.2.tgz#f3f5c0c3ba7299a7ef99427e44633257ade43320"
-
-to-function@2.0.6:
-  version "2.0.6"
-  resolved "https://registry.yarnpkg.com/to-function/-/to-function-2.0.6.tgz#7d56cd9c3b92fa8dbd7b22e83d51924de740ebc5"
-  dependencies:
-    component-props "*"
 
 toposort@^1.0.0:
   version "1.0.3"
