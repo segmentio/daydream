@@ -14,7 +14,6 @@ class Recorder {
   record (msg) {
     const lastElement = this.recording[this.recording.length - 1]
     if (!lastElement) return this.recording.push(msg)
-    if (lastElement[1] === msg[1]) return
     this.recording.push(msg)
   }
 

@@ -1,5 +1,7 @@
-import cssPath from 'css-path'
+import CssSelectorGenerator from 'css-selector-generator'
 import each from 'component-each'
+
+const cssSelectorGeneratorInstance = new CssSelectorGenerator
 
 detect('click')
 detect('keydown')
@@ -28,7 +30,7 @@ function copyText () {
 
 function handle (event, node) {
   if (chrome && chrome.runtime) {
-    const path = cssPath(node)
+    const path = cssSelectorGeneratorInstance.getSelector(node)
     const message = [event, path]
     message.push(node.value)
     chrome.runtime.sendMessage(message)
