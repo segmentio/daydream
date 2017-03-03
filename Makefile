@@ -3,8 +3,11 @@ WEBPACK_FLAGS ?=
 build: node_modules
 	node_modules/.bin/webpack $(WEBPACK_FLAGS) --bail
 
-node_modules: package.json
-	npm install
+watch: node_modules
+	node_modules/.bin/webpack $(WEBPACK_FLAGS) --watch
+
+node_modules: yarn.lock
+	yarn
 	touch $@
 
 clean:

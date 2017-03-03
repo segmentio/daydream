@@ -1,18 +1,17 @@
+import 'babel-polyfill'
+import React from 'react'
+import { render } from 'react-dom'
+import { Provider } from 'react-redux'
+import configureStore from './configureStore'
+import App from './containers/App'
+import './base.css'
 
-import js from 'highlight-javascript'
-import Highlight from 'syntax-highlighter'
-import './index.css'
+const store = configureStore()
 
-chrome.storage.sync.get('nightmare', function (res) {
-  const el = document.querySelector('pre')
-  const highlight = Highlight().use(js)
-  el.innerText = res.nightmare
-  highlight.element(el)
-})
+const app = (
+  <Provider store={store}>
+    <App />
+  </Provider>
+)
 
-const restart = document.querySelector('.Button')
-restart.addEventListener('click', function (event) {
-  chrome.browserAction.setBadgeText({text: ''})
-  chrome.runtime.reload()
-  window.close()
-})
+render(app, document.getElementById('root'))
