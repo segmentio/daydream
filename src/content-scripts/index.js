@@ -4,7 +4,7 @@ const selector = new Selector()
 
 class EventRecorder {
   start () {
-    const inputs = document.querySelectorAll('input')
+    const inputs = document.querySelectorAll('input, textarea')
     for (let i = 0; i < inputs.length; i++) {
       inputs[i].addEventListener('change', this.handleEvent)
     }
