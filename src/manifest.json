@@ -9,22 +9,13 @@
     "tabs",
     "*://*/"
   ],
-  "content_security_policy": "script-src 'self' https://*.segment.com https://*.mxpnl.com; object-src 'self'",
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; https://*.segment.com https://*.mxpnl.com; object-src 'self'",
   "browser_action": {
     "default_icon": "images/icon-black.png",
     "default_title": "Daydream"
   },
   "background": {
-    "scripts": ["background.js"],
+    "scripts": [ "background.js" ],
     "persistent": false
-  },
-  "commands": {
-    "detect-screenshot": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+3"
-      },
-      "description": "Detect a screenshot",
-      "global": true
-    }
   }
 }

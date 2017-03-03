@@ -1,21 +1,9 @@
-body {
-  width: 350px;
-  height: 350px;
-  -webkit-font-smoothing: antialiased;
-}
-
 pre {
   font-size: 13px;
   overflow: auto;
 }
 
-a {
-  font-size: 15px;
-  cursor: pointer;
-  color: blue;
-}
-
-.Button {
+.button {
   position: relative;
   left: 120px;
   top: 190px;
@@ -34,11 +22,11 @@ a {
   margin: 10px;
 }
 
-.Button:hover {
+.button:hover {
   background-color: #49B882;
 }
 
-.Button:focus {
+.button:focus {
   outline: none;
 }
 

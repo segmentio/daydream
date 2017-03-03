@@ -1,38 +1,24 @@
-import CssSelectorGenerator from 'css-selector-generator'
-import each from 'component-each'
+import Selector from 'css-selector-generator'
 
-const cssSelectorGeneratorInstance = new CssSelectorGenerator
+const selector = new Selector()
 
-detect('click')
-detect('keydown')
-detect('copy')
-
-function detect (listener) {
-  if (listener === 'copy') return copyText()
-
-  const els = document.querySelectorAll('body')
-  each(els, function (el) {
-    el.addEventListener(listener, function (event) {
-      if (listener === 'click') handle('click', event.target)
-      if (listener === 'keydown' && event.keyCode === 9) handle('type', event.target)
-    })
-  })
-};
-
-function copyText () {
-  window.onkeydown = function (event) {
-    if (event.keyCode === 67 && event.ctrlKey) {
-      const selObj = window.getSelection()
-      handle('evaluate', selObj.focusNode)
+class EventRecorder {
+  start () {
+    const inputs = document.querySelectorAll('input, textarea')
+    for (let i = 0; i < inputs.length; i++) {
+      inputs[i].addEventListener('change', this.handleEvent)
     }
+    document.body.addEventListener('click', this.handleEvent)
   }
-};
 
-function handle (event, node) {
-  if (chrome && chrome.runtime) {
-    const path = cssSelectorGeneratorInstance.getSelector(node)
-    const message = [event, path]
-    message.push(node.value)
-    chrome.runtime.sendMessage(message)
+  handleEvent (e) {
+    chrome.runtime.sendMessage({
+      selector: selector.getSelector(e.target),
+      value: e.target.value,
+      action: e.type
+    })
   }
-};
+}
+
+const eventRecorder = new EventRecorder()
+eventRecorder.start()
