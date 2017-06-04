@@ -61,11 +61,11 @@ class Daydream {
           result += `  .goto('${content}')${newLine}`
           break
         case 'click':
-          result += `  .click('${content}')${newLine}`
+          result += `  .wait('${content}')${newLine}  .click('${content}')${newLine}`
           break
         case 'type':
           const val = record[2]
-          result += `  .type('${content}', '${val}')${newLine}`
+          result += `  .wait('${content}')${newLine}  .type('${content}', '${val}')${newLine}`
           break
         case 'screenshot':
           result += `  .screenshot('${content}')${newLine}`
