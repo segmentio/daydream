@@ -17,10 +17,10 @@ ${props.recording.reduce((records, record, i) => {
 
   switch (action) {
     case 'change':
-      result += `.type('${selector}', '${value}')`
+      result += `.wait('${selector}')\n.type('${selector}', '${value}')`
       break
     case 'click':
-      result += `.click('${selector}')`
+      result += `.wait('${selector}')\n.click('${selector}')`
       break
     case 'goto':
       result += `.goto('${url}')`
