@@ -1,6 +1,7 @@
 pre {
   font-size: 13px;
   overflow: auto;
+  padding-bottom: 6px;
 }
 
 .button {
@@ -11,7 +12,7 @@ pre {
   border-radius: 5px;
   border-color: #49B882;
   border-style: none;
-  padding: 3px 15px 5px;
+  padding: 12px;
   text-transform: lowercase;
   font-size: 16px;
   line-height: 1;
