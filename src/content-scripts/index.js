@@ -2,6 +2,8 @@ import Selector from 'css-selector-generator'
 
 const selector = new Selector()
 
+const escape = text => text.replace(/'/gm, '\\\'')
+
 class EventRecorder {
   start () {
     const inputs = document.querySelectorAll('input, textarea')
@@ -14,7 +16,7 @@ class EventRecorder {
   handleEvent (e) {
     chrome.runtime.sendMessage({
       selector: selector.getSelector(e.target),
-      value: e.target.value,
+      value: escape(e.target.value),
       action: e.type
     })
   }
