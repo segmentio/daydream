@@ -5,6 +5,9 @@
     "type": "git",
     "url": "https://github.com/segmentio/daydream"
   },
+  "scripts": {
+    "test": "./node_modules/.bin/standard"
+  },
   "description": "A chrome extension to record your actions into a nightmare script.",
   "devDependencies": {
     "babel-core": "^6.21.0",
