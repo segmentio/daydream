@@ -11,7 +11,7 @@ let sortEvents = events => {
   const output = []
 
   for (let i = 0, len = events.length; i < len; i++) {
-    const {action, value = null, selector} = events[i]
+    const {action, selector} = events[i]
 
     if (action === 'keypress') {
       if (

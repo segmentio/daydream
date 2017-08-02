@@ -6,10 +6,11 @@
     "url": "https://github.com/segmentio/daydream"
   },
   "scripts": {
-    "test": "./node_modules/.bin/standard"
+    "test": "./node_modules/.bin/standard && ./node_modules/.bin/ava"
   },
   "description": "A chrome extension to record your actions into a nightmare script.",
   "devDependencies": {
+    "ava": "^0.21.0",
     "babel-core": "^6.21.0",
     "babel-loader": "^6.2.10",
     "babel-plugin-transform-runtime": "^6.15.0",
@@ -21,6 +22,7 @@
     "babel-runtime": "^6.20.0",
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.26.1",
+    "enzyme": "^2.9.1",
     "extract-text-webpack-plugin": "^1.0.1",
     "html-webpack-plugin": "^2.28.0",
     "postcss": "^5.2.6",
