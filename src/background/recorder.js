@@ -16,6 +16,18 @@ export default class Recorder {
     chrome.tabs.onUpdated.removeListener()
   }
 
+  incrementCounter () {
+    chrome.browserAction.getBadgeText({}, count => {
+      chrome.browserAction.setBadgeBackgroundColor({
+        color: '#00386C'
+      })
+
+      chrome.browserAction.setBadgeText({
+        text: String(+count + 1)
+      })
+    })
+  }
+
   handleCompletedNavigation ({ url, frameId }) {
     if (frameId === 0) {
       chrome.tabs.executeScript({ file: 'content-script.js' })
@@ -24,11 +36,13 @@ export default class Recorder {
 
   handleCommittedNavigation ({ transitionQualifiers, url }) {
     if (transitionQualifiers.includes('from_address_bar')) {
+      this.incrementCounter()
       this.handleMessage({ action: 'goto', url })
     }
   }
 
   handleMessage (message) {
+    this.incrementCounter()
     this.recording.push(message)
   }
 }
