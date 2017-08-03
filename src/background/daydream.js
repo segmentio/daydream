@@ -27,7 +27,8 @@ export default class Daydream {
         chrome.browserAction.setIcon({ path: './images/icon-idle.png' })
         chrome.browserAction.setPopup({ popup: 'index.html' })
         chrome.browserAction.setBadgeBackgroundColor({ color: '#00386C' })
-        this.showCount()
+        chrome.browserAction.setTitle({ title: 'Daydream' })
+        this.showCounter()
       } else {
         this.recorder.start()
         chrome.browserAction.setIcon({ path: './images/icon-recording.png' })

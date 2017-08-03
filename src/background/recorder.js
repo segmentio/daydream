@@ -8,6 +8,7 @@ export default class Recorder {
     chrome.webNavigation.onCompleted.addListener(this.handleCompletedNavigation.bind(this))
     chrome.webNavigation.onCommitted.addListener(this.handleCommittedNavigation.bind(this))
     chrome.runtime.onMessage.addListener(this.handleMessage.bind(this))
+    chrome.browserAction.setTitle({ title: 'Recording events...' })
   }
 
   stop () {

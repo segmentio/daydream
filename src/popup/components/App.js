@@ -14,7 +14,10 @@ let sortEvents = events => {
     const {action, value = null, selector} = events[i]
 
     if (action === 'keypress') {
-      if (events[i + 1].action === 'change' && events[i + 1].selector === selector) {
+      if (
+        events[i + 1] &&
+        events[i + 1].action === 'change' &&
+        events[i + 1].selector === selector) {
         output.push(events[i + 1])
         output.push(events[i])
         i++
@@ -41,6 +44,12 @@ ${sortEvents(props.recording).reduce((records, record, i) => {
   if (i !== records.length) result += '\n'
 
   switch (action) {
+    case 'wait':
+      result += `  .wait(${value})`
+      break
+    case 'scroll':
+      result += `  .scrollTo(${top}, ${left})`
+      break
     case 'change':
       result += `  .type('${selector}', '${value}')`
       break
