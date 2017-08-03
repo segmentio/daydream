@@ -2,9 +2,11 @@
 export default class Recorder {
   constructor () {
     this.recording = []
+    this.running = false
   }
 
   start () {
+    this.running = true
     chrome.webNavigation.onCompleted.addListener(this.handleCompletedNavigation.bind(this))
     chrome.webNavigation.onCommitted.addListener(this.handleCommittedNavigation.bind(this))
     chrome.runtime.onMessage.addListener(this.handleMessage.bind(this))
@@ -12,21 +14,24 @@ export default class Recorder {
   }
 
   stop () {
+    this.running = false
     chrome.webNavigation.onCommitted.removeListener()
     chrome.runtime.onMessage.removeListener()
     chrome.tabs.onUpdated.removeListener()
   }
 
   incrementCounter () {
-    chrome.browserAction.getBadgeText({}, count => {
-      chrome.browserAction.setBadgeBackgroundColor({
-        color: '#00386C'
-      })
+    if (this.running) {
+      chrome.browserAction.getBadgeText({}, count => {
+        chrome.browserAction.setBadgeBackgroundColor({
+          color: '#00386C'
+        })
 
-      chrome.browserAction.setBadgeText({
-        text: String(+count + 1)
+        chrome.browserAction.setBadgeText({
+          text: String(+count + 1)
+        })
       })
-    })
+    }
   }
 
   handleCompletedNavigation ({ url, frameId }) {
