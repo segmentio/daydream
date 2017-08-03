@@ -10,6 +10,15 @@ function generateJavascript (events) {
     if (i !== records.length) result += '\n'
 
     switch (action) {
+      case 'mouseover':
+        result += `  .mouseover('${selector}')`
+        break
+      case 'wait':
+        result += `  .wait(${value})`
+        break
+      case 'scroll':
+        result += `  .scrollTo(${top}, ${left})`
+        break
       case 'change':
         result += `  .type('${selector}', '${value}')`
         break
