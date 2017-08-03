@@ -9,7 +9,9 @@ class EventRecorder {
   constructor () {
     this.startTime = performance.now()
     this.scrollDebounceTimer
+    this.mouseDebounceTimer
     this.lastScroll
+    this.lastMouse
   }
 
   start () {
@@ -22,6 +24,27 @@ class EventRecorder {
     document.body.addEventListener('keypress', this.handleKeypress)
     document.body.addEventListener('click', this.handleEvent)
     document.body.addEventListener('scroll', this.handleScroll)
+    document.body.addEventListener('mouseover', this.handleMouseover)
+  }
+
+  handleMouseover (e) {
+    if (this.mouseDebounceTimer) {
+      clearTimeout(this.mouseDebounceTimer)
+    }
+
+    this.mouseDebounceTimer = setTimeout(() => {
+      chrome.runtime.sendMessage({
+        action: 'wait',
+        value: Math.floor(e.timeStamp - (this.lastMouse || this.startTime))
+      })
+
+      chrome.runtime.sendMessage({
+        action: e.type,
+        selector: selector.getSelector(e.target)
+      })
+
+      this.lastMouse = performance.now()
+    }, 100)
   }
 
   handleScroll (e) {
