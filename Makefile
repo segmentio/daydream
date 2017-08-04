@@ -6,7 +6,7 @@ build: node_modules
 watch: node_modules
 	node_modules/.bin/webpack $(WEBPACK_FLAGS) --watch
 
-test: build
+test:
 	node_modules/.bin/ava
 
 node_modules: yarn.lock

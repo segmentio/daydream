@@ -4,7 +4,7 @@ import sortEvents from './sortEvents'
 
 function generateJavascript (events) {
   return sortEvents(events).reduce((records, record, i) => {
-    const { action, url, selector, value, top, left } = record
+    const { action, url, selector, value } = record
 
     let result = records
     if (i !== records.length) result += '\n'
