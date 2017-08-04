@@ -26,13 +26,13 @@ First enable Opera to install Chrome extensions [here](https://addons.opera.com/
 
 ## Usage
 
-Just click the black daydream icon (it should turn green to indicate that it is actively recording), run all the tasks you wish to automate, and then click the green icon and open the popup.
+Just click the daydream icon (the outline should turn red to indicate that it is actively recording), run all the tasks you wish to automate, and then click the icon and open the popup.
 
 ## Notes
 
 Daydream currently supports `.goto()`, `.click()`, `.type()`, `.screenshot()`, and `.refresh()`.
 
-If you want daydream to capture typing, press <kbd>tab</kbd> after you finish typing in each `input` element.
+If you want daydream to capture typing, press <kbd>tab</kbd> after you finish typing in each `input` element. If an input box doesn't have a corresponding _submit_ button, press <kbd>tab</kbd> to first capture the text and then <kbd>shift<kbd> + <kbd>tab</kbd> to go back and then press enter, which will be captured as a separate action.
 
 ## Analytics
 

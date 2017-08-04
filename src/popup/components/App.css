@@ -1,6 +1,13 @@
 pre {
   font-size: 13px;
   overflow: auto;
+  padding: 6px;
+  border: 1px solid #d9e3ed;
+}
+
+@font-face {
+  font-family: CircularStdBook;
+  src: url("../../fonts/circular-std-book.woff2");
 }
 
 .button {
@@ -11,8 +18,7 @@ pre {
   border-radius: 5px;
   border-color: #49B882;
   border-style: none;
-  padding: 3px 15px 5px;
-  text-transform: lowercase;
+  padding: 12px;
   font-size: 16px;
   line-height: 1;
   display: inline-block;
@@ -20,6 +26,7 @@ pre {
   background-color: #49B882;
   color: #fff;
   margin: 10px;
+  font-family: CircularStdBook, sans-serif;
 }
 
 .button:hover {

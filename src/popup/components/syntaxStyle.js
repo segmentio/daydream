@@ -6,15 +6,15 @@ export default {
     margin: 0
   },
   'hljs-keyword': {
-    color: '#de6339'
+    color: '#00386C'
   },
   'hljs-string': {
-    color: '#e2a413'
-  },
-  'hljs-built_in': {
     color: '#49B882'
   },
+  'hljs-built_in': {
+    color: '#ff7b82'
+  },
   'hljs-literal': {
-    color: '#6c71c4'
+    color: '#00386C'
   }
 }

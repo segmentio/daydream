@@ -6,6 +6,9 @@ build: node_modules
 watch: node_modules
 	node_modules/.bin/webpack $(WEBPACK_FLAGS) --watch
 
+test:
+	node_modules/.bin/ava
+
 node_modules: yarn.lock
 	yarn
 	touch $@
@@ -16,4 +19,4 @@ clean:
 lint: node_modules
 	node_modules/.bin/standard
 
-.PHONY: clean lint
+.PHONY: clean lint test
