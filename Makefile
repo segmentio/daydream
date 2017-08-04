@@ -19,4 +19,4 @@ clean:
 lint: node_modules
 	node_modules/.bin/standard
 
-.PHONY: clean lint
+.PHONY: clean lint test
