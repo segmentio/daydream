@@ -33,6 +33,7 @@
     "sinon-chrome": "^2.2.1",
     "standard": "^8.6.0",
     "style-loader": "^0.13.1",
+    "url-loader": "^0.5.9",
     "webpack": "^2.2.1"
   },
   "dependencies": {

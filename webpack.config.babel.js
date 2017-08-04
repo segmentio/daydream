@@ -29,7 +29,8 @@ const base = {
   plugins: [
     new CopyPlugin([
       { from: './src/manifest.json', to: './manifest.json' },
-      { from: './src/images', to: 'images' }
+      { from: './src/images', to: 'images' },
+      { from: './src/fonts', to: 'fonts' }
     ]),
     new HtmlWebpackPlugin({
       template: './src/popup/template.html',
@@ -56,13 +57,20 @@ const development = {
         use: [
           'style-loader',
           {
-            loader: 'css-loader',
+            loader: 'css-loader?url=false',
             options: {
               localIdentName: '[local]_[hash:8]',
               modules: true
             }
           }
         ]
+      },
+      {
+        test: /\.woff2$/,
+        loader: 'url-loader',
+        options: {
+          limit: 50000,
+        }
       }
     ]
   },
@@ -85,7 +93,7 @@ const production = {
         use: ExtractTextPlugin.extract({
           use: [
             {
-              loader: 'css-loader',
+              loader: 'css-loader?url=false',
               options: {
                 modules: true,
                 localIdentName: '[hash:8]'
@@ -99,6 +107,13 @@ const production = {
         test: /\.css$/,
         exclude: /src/,
         loader: ExtractTextPlugin.extract({ use: [ 'css-loader' ] })
+      },
+      {
+        test: /\.woff2$/,
+        loader: 'url-loader',
+        options: {
+          limit: 50000,
+        }
       }
     ]
   },
