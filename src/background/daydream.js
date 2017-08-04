@@ -7,18 +7,33 @@ export default class Daydream {
     this.recorder = new Recorder()
   }
 
+  showCounter () {
+    chrome.browserAction.getBadgeText({}, count => {
+      chrome.browserAction.setBadgeBackgroundColor({
+        color: '#00386C'
+      })
+
+      chrome.browserAction.setBadgeText({
+        text: count
+      })
+    })
+  }
+
   boot () {
     chrome.browserAction.onClicked.addListener(() => {
       if (this.isRunning) {
         this.recorder.stop()
         chrome.storage.sync.set({ recording: this.recorder.recording })
-        chrome.browserAction.setIcon({ path: './images/icon-black.png' })
+        chrome.browserAction.setIcon({ path: './images/icon-idle.png' })
         chrome.browserAction.setPopup({ popup: 'index.html' })
-        chrome.browserAction.setBadgeText({ text: '1' })
+        chrome.browserAction.setBadgeBackgroundColor({ color: '#00386C' })
+        chrome.browserAction.setTitle({ title: 'Daydream' })
+        this.showCounter()
       } else {
         this.recorder.start()
-        chrome.browserAction.setIcon({ path: './images/icon-green.png' })
+        chrome.browserAction.setIcon({ path: './images/icon-recording.png' })
       }
+
       this.isRunning = !this.isRunning
     })
   }

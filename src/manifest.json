@@ -11,7 +11,7 @@
   ],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; https://*.segment.com https://*.mxpnl.com; object-src 'self'",
   "browser_action": {
-    "default_icon": "images/icon-black.png",
+    "default_icon": "images/icon-idle.png",
     "default_title": "Daydream"
   },
   "background": {
