@@ -1,7 +1,10 @@
 import React from 'react'
-import SyntaxHighlighter from 'react-syntax-highlighter'
+import SyntaxHighlighter, { registerLanguage } from 'react-syntax-highlighter/dist/light'
+import js from 'react-syntax-highlighter/dist/languages/javascript'
 import syntaxStyle from './syntaxStyle'
 import styles from './App.css'
+
+registerLanguage('javascript', js)
 
 const App = props => (
   <div>
