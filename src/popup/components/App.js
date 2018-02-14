@@ -19,7 +19,7 @@ const App = ({ onSelectTab, selectedTab, handleRestart, recording }) => {
 
   return (
     <div>
-      <Tablist marginX={-4} marginBottom={16}>
+      <Tablist marginX={-4} marginBottom={16} textAlign='center'>
         {tabs.map((tab, index) => (
           <Tab
             key={tab}
