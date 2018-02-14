@@ -4,7 +4,7 @@ A chrome extension to record your actions into a [Nightmare](https://github.com/
 
 ## Example
 
-![Demo](http://f.cl.ly/items/2S3a3P2a1u3r1Z1I1y3f/screenshot.png)
+![Demo](https://cldup.com/jSPoteXKJS.png)
 
 ## Installing
 
