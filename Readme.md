@@ -1,6 +1,6 @@
 # Daydream
 
-A chrome extension to record your actions into a [Nightmare](https://github.com/segmentio/nightmare) script.
+A chrome extension to record your actions into a [Nightmare](https://github.com/segmentio/nightmare) or [Puppeteer](https://github.com/GoogleChrome/puppeteer) script.
 
 ## Example
 
@@ -33,21 +33,6 @@ Just click the black daydream icon (it should turn green to indicate that it is 
 Daydream currently supports `.goto()`, `.click()`, `.type()`, `.screenshot()`, and `.refresh()`.
 
 If you want daydream to capture typing, press <kbd>tab</kbd> after you finish typing in each `input` element.
-
-## Analytics
-
-Daydream uses the [analytics-node](https://github.com/segmentio/analytics-node) library for analytics tracking. Here's an example of how you can add analytics to your own chrome extension:
-
-```js
-const Analytics = require('analytics-node');
-const analytics = new Analytics('YOUR_WRITE_KEY');
-
-const languages = window.navigator.languages;
-const version = chrome.app.getDetails().version;
-
-analytics.identify({ userId: '12345', version: version, languages: languages });
-analytics.track({ userId: '12345', event: 'Opened Popup' });
-```
 
 ## License
 
