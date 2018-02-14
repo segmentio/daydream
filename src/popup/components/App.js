@@ -9,7 +9,7 @@ registerLanguage('javascript', js)
 
 const tabs = ['Nightmare', 'Puppeteer']
 
-const App = ({ onSelectTab, selectedTab, handleRestart, recording }) => {
+const App = ({ onSelectTab, selectedTab, onRestart, recording }) => {
   let script = ''
   if (selectedTab === 'Nightmare') {
     script = getNightmare(recording)
@@ -37,7 +37,7 @@ const App = ({ onSelectTab, selectedTab, handleRestart, recording }) => {
         {script}
       </SyntaxHighlighter>
 
-      <button className={styles.button} onClick={handleRestart}>Restart</button>
+      <button className={styles.button} onClick={onRestart}>Restart</button>
     </div>
   )
 }
