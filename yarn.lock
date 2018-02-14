@@ -2434,13 +2434,9 @@ highlight-javascript@0.0.3:
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/highlight-javascript/-/highlight-javascript-0.0.3.tgz#25350956c5c0b6ab817ed26938efc0f9f93ddbcf"
 
-highlight.js@~9.8.0:
-  version "9.8.0"
-  resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-9.8.0.tgz#38eeef40cd45eaddbec8c9e5238fb7a783a3b685"
-
-highlight.js@~9.9.0:
-  version "9.9.0"
-  resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-9.9.0.tgz#b9995dcfdc2773e307a34f0460d92b9a474782c0"
+highlight.js@~9.12.0:
+  version "9.12.0"
+  resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-9.12.0.tgz#e6d9dbe57cbefe60751f02af336195870c90c01e"
 
 hmac-drbg@^1.0.0:
   version "1.0.0"
@@ -3011,11 +3007,11 @@ lower-case@^1.1.1:
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/lower-case/-/lower-case-1.1.4.tgz#9a2cabd1b9e8e0ae993a4bf7d5875c39c42e8eac"
 
-lowlight@^1.5.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/lowlight/-/lowlight-1.6.0.tgz#92f61e31e09ae9e971e70cabdd9e8f219f025232"
+lowlight@~1.9.1:
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/lowlight/-/lowlight-1.9.1.tgz#ed7c3dffc36f8c1f263735c0fe0c907847c11250"
   dependencies:
-    highlight.js "~9.9.0"
+    highlight.js "~9.12.0"
 
 lru-cache@~2.6.5:
   version "2.6.5"
@@ -4115,13 +4111,13 @@ react-scrollbar-size@^2.0.2:
     react-event-listener "^0.5.1"
     stifle "^1.0.2"
 
-react-syntax-highlighter@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/react-syntax-highlighter/-/react-syntax-highlighter-5.0.0.tgz#571c3418cc87b6e46839def297df74051b778571"
+react-syntax-highlighter@^5.7.0:
+  version "5.7.0"
+  resolved "https://registry.yarnpkg.com/react-syntax-highlighter/-/react-syntax-highlighter-5.7.0.tgz#3cbe81a53fd0f91e34f789c229e5274411054b37"
   dependencies:
     babel-runtime "^6.18.0"
-    highlight.js "~9.8.0"
-    lowlight "^1.5.0"
+    highlight.js "~9.12.0"
+    lowlight "~1.9.1"
 
 react-tiny-virtual-list@^2.1.4:
   version "2.1.4"
