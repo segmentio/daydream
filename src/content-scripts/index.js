@@ -4,27 +4,42 @@ const selector = new Selector()
 
 class EventRecorder {
   start () {
-    const inputs = document.querySelectorAll('input, textarea')
-    for (let i = 0; i < inputs.length; i++) {
-      inputs[i].addEventListener('change', this.handleEvent)
+    const typeableElements = document.querySelectorAll('input, textarea')
+    const clickableElements = document.querySelectorAll('a, button')
+
+    for (let i = 0; i < typeableElements.length; i++) {
+      typeableElements[i].addEventListener('keydown', this.handleKeydown)
     }
-    document.body.addEventListener('click', this.handleEvent)
+
+    for (let i = 0; i < clickableElements.length; i++) {
+      clickableElements[i].addEventListener('click', this.handleClick)
+    }
   }
 
-  handleEvent (e) {
+  handleKeydown (e) {
+    if (e.keyCode !== 9) {
+      return
+    }
+    sendMessage(e)
+  }
+
+  handleClick (e) {
     if (e.target.href) {
       chrome.runtime.sendMessage({
         action: 'url',
         value: e.target.href
       })
     }
-
-    chrome.runtime.sendMessage({
-      selector: selector.getSelector(e.target),
-      value: e.target.value,
-      action: e.type
-    })
+    sendMessage(e)
   }
+}
+
+function sendMessage (e) {
+  chrome.runtime.sendMessage({
+    selector: selector.getSelector(e.target),
+    value: e.target.value,
+    action: e.type
+  })
 }
 
 const eventRecorder = new EventRecorder()

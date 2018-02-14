@@ -53,7 +53,7 @@ ${recording.reduce((records, record, i) => {
   if (i !== records.length) result += '\n'
 
   switch (action) {
-    case 'change':
+    case 'keydown':
       result += `.type('${selector}', '${value}')`
       break
     case 'click':
@@ -90,7 +90,7 @@ ${recording.reduce((records, record, i) => {
   if (i !== records.length) result += '\n'
 
   switch (action) {
-    case 'change':
+    case 'keydown':
       result += `  await page.type('${selector}', '${value}')`
       break
     case 'click':
