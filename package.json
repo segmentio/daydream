@@ -31,15 +31,11 @@
   "dependencies": {
     "analytics-node": "^2.1.0",
     "css-selector-generator": "^1.0.2",
+    "evergreen-ui": "^1.2.1",
     "highlight-javascript": "0.0.3",
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2",
-    "react-redux": "^5.0.3",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
     "react-syntax-highlighter": "^5.7.0",
-    "redux": "^3.6.0",
-    "redux-actions": "^1.2.2",
-    "redux-logger": "^2.8.2",
-    "redux-thunk": "^2.2.0",
     "syntax-highlighter": "0.0.3"
   },
   "standard": {
