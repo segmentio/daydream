@@ -4,8 +4,26 @@ import { getRecording, restart } from '../actions/creators'
 import App from '../components/App'
 
 class AppContainer extends Component {
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      selectedTab: 'Nightmare'
+    }
+
+    this.onSelectTab = this.onSelectTab.bind(this)
+  }
+
   render () {
-    return React.createElement(App, this.props)
+    return React.createElement(App, {
+      ...this.props,
+      ...this.state,
+      onSelectTab: this.onSelectTab
+    })
+  }
+
+  onSelectTab (selectedTab) {
+    this.setState({ selectedTab })
   }
 
   componentDidMount () {
