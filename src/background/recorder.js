@@ -2,6 +2,7 @@
 export default class Recorder {
   constructor () {
     this.recording = []
+    this.lastUrl
   }
 
   start () {
@@ -23,12 +24,16 @@ export default class Recorder {
   }
 
   handleCommittedNavigation ({ transitionQualifiers, url }) {
-    if (transitionQualifiers.includes('from_address_bar')) {
+    if (transitionQualifiers.includes('from_address_bar') || url === this.lastUrl) {
       this.handleMessage({ action: 'goto', url })
     }
   }
 
   handleMessage (message) {
-    this.recording.push(message)
+    if (message.action === 'url') {
+      this.lastUrl = message.value
+    } else {
+      this.recording.push(message)
+    }
   }
 }

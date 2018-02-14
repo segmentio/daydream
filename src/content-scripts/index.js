@@ -12,6 +12,13 @@ class EventRecorder {
   }
 
   handleEvent (e) {
+    if (e.target.href) {
+      chrome.runtime.sendMessage({
+        action: 'url',
+        value: e.target.href
+      })
+    }
+
     chrome.runtime.sendMessage({
       selector: selector.getSelector(e.target),
       value: e.target.value,
