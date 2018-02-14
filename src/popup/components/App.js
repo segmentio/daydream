@@ -100,7 +100,7 @@ ${recording.reduce((records, record, i) => {
       result += `  await page.goto('${url}')`
       break
     case 'reload':
-      result += `  await page.refresh()`
+      result += `  await page.reload()`
       break
   }
 
