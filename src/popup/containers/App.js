@@ -1,24 +1,31 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { getRecording, restart } from '../actions/creators'
 import App from '../components/App'
 
-class AppContainer extends Component {
+export default class AppContainer extends Component {
   constructor (props) {
     super(props)
 
     this.state = {
-      selectedTab: 'Nightmare'
+      selectedTab: 'Nightmare',
+      recording: []
     }
 
     this.onSelectTab = this.onSelectTab.bind(this)
+    this.onRestart = this.onRestart.bind(this)
   }
 
   render () {
     return React.createElement(App, {
       ...this.props,
       ...this.state,
-      onSelectTab: this.onSelectTab
+      onSelectTab: this.onSelectTab,
+      onRestart: this.onRestart
+    })
+  }
+
+  componentDidMount () {
+    chrome.storage.sync.get('recording', ({ recording }) => {
+      this.setState({ recording })
     })
   }
 
@@ -26,24 +33,9 @@ class AppContainer extends Component {
     this.setState({ selectedTab })
   }
 
-  componentDidMount () {
-    this.props.init()
+  onRestart () {
+    chrome.browserAction.setBadgeText({ text: '' })
+    chrome.runtime.reload()
+    window.close()
   }
 }
-
-function mapStateToProps (state) {
-  return {
-    recording: state.application.recording
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    init () {
-      dispatch(getRecording())
-    },
-    handleRestart: restart
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AppContainer)

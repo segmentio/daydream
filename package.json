@@ -35,12 +35,7 @@
     "highlight-javascript": "0.0.3",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "react-redux": "^5.0.6",
     "react-syntax-highlighter": "^5.7.0",
-    "redux": "^3.6.0",
-    "redux-actions": "^1.2.2",
-    "redux-logger": "^2.8.2",
-    "redux-thunk": "^2.2.0",
     "syntax-highlighter": "0.0.3"
   },
   "standard": {
