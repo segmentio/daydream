@@ -7,7 +7,7 @@ import styles from './App.css'
 
 registerLanguage('javascript', js)
 
-const tabs = ['Nightmare', 'Puppeteer']
+const tabs = ['Nightmare', 'Puppeteer', 'WebdriverIO']
 
 const App = ({ onSelectTab, selectedTab, onRestart, recording }) => {
   let script = ''
@@ -15,6 +15,8 @@ const App = ({ onSelectTab, selectedTab, onRestart, recording }) => {
     script = getNightmare(recording)
   } else if (selectedTab === 'Puppeteer') {
     script = getPuppeteer(recording)
+  } else if (selectedTab === 'WebdriverIO') {
+    script = getWebdriverIO(recording)
   }
 
   return (
@@ -108,6 +110,49 @@ ${recording.reduce((records, record, i) => {
 }, '')}
   await browser.close()
 })()`
+}
+
+function getWebdriverIO (recording){
+
+  return `const webdriverio = require('webdriverio');
+  const options = {
+      desiredCapabilities: {
+          browserName: 'chrome'
+      }
+  };
+
+  webdriverio
+  .remote(options)
+  .init()
+  ${recording.reduce((records, record, i) => {
+  const { action, url, selector, value } = record
+  let result = records
+  if (i !== records.length) result += '\n'
+
+  switch (action) {
+    case 'keydown':
+      result += `  .setValue('${selector}', '${value}')`
+      break
+    case 'click':
+      result += `  .click('${selector}')`
+      break
+    case 'goto':
+      result += `  .url('${url}')`
+      break
+    case 'reload':
+      result += `  .refresh()`
+      break
+  }
+
+  return result
+  }, '')}
+  .end()
+  .then(function (result) {
+  console.log(result)
+  })
+  .catch(function (error) {
+  console.error('Error:', error);
+  });`
 }
 
 export default App
