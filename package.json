@@ -34,7 +34,7 @@
     "evergreen-ui": "^1.2.1",
     "highlight-javascript": "0.0.3",
     "react": "^16.2.0",
-    "react-dom": "^16.2.0",
+    "react-dom": "^16.2.1",
     "react-syntax-highlighter": "^5.7.0",
     "syntax-highlighter": "0.0.3"
   },
