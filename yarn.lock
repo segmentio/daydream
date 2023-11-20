@@ -1509,9 +1509,10 @@ css-select@^1.1.0:
     domutils "1.5.1"
     nth-check "~1.0.1"
 
-css-selector-generator@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/css-selector-generator/-/css-selector-generator-1.0.2.tgz#7b64b8a696cfe91b39ffdb3188c0cbfec21e517a"
+css-selector-generator@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/css-selector-generator/-/css-selector-generator-1.2.0.tgz#5c8839ab3412d530d7548eda5168ecb799381b2c"
+  integrity sha512-LHj9xWzOBXy08JMUjEsG7MkEqLHcYFNGPMhAKxM2SzdDf7RLRFIT2JaJq3CHhHuLpHA+m4QfOjm5L+Yd+x9WLg==
 
 css-selector-tokenizer@^0.6.0:
   version "0.6.0"
