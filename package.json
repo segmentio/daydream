@@ -29,7 +29,7 @@
     "webpack": "^2.2.1"
   },
   "dependencies": {
-    "analytics-node": "^2.1.0",
+    "analytics-node": "^2.4.1",
     "css-selector-generator": "^1.0.2",
     "evergreen-ui": "^1.2.1",
     "highlight-javascript": "0.0.3",
