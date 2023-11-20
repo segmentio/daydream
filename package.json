@@ -35,7 +35,7 @@
     "highlight-javascript": "0.0.3",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "react-syntax-highlighter": "^5.7.0",
+    "react-syntax-highlighter": "^5.8.0",
     "syntax-highlighter": "0.0.3"
   },
   "standard": {

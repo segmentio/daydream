@@ -4088,9 +4088,10 @@ react-scrollbar-size@^2.0.2:
     react-event-listener "^0.5.1"
     stifle "^1.0.2"
 
-react-syntax-highlighter@^5.7.0:
-  version "5.7.0"
-  resolved "https://registry.yarnpkg.com/react-syntax-highlighter/-/react-syntax-highlighter-5.7.0.tgz#3cbe81a53fd0f91e34f789c229e5274411054b37"
+react-syntax-highlighter@^5.8.0:
+  version "5.8.0"
+  resolved "https://registry.yarnpkg.com/react-syntax-highlighter/-/react-syntax-highlighter-5.8.0.tgz#a220c010fd0641751d93532509ba7159cc3a4383"
+  integrity sha512-+FolT9NhFBqE4SsZDelSzsYJJS/JCnQqo4+GxLrFPoML548uvr8f4Eh5nnd5o6ERKFW7ryiygOX9SPnxdnlpkg==
   dependencies:
     babel-runtime "^6.18.0"
     highlight.js "~9.12.0"
